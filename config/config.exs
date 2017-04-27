@@ -48,6 +48,10 @@ config :logger_json, :backend,
   json_encoder: Poison,
   metadata: :all
 
+config :ael_api,
+  known_buckets: {:system, :list, "KNOWN_BUCKETS", []},
+  secrets_ttl: {:system, :integer, "SECRETS_TTL", 600} # seconds
+
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
 # by uncommenting the line below and defining dev.exs, test.exs and such.

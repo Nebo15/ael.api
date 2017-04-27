@@ -15,3 +15,7 @@ config :logger, level: :warn
 
 # Run acceptance test in concurrent mode
 config :ael_api, sql_sandbox: true
+
+config :ael_api,
+  known_buckets: ["declarations"],
+  secret_ttl: 600 # seconds

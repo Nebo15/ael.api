@@ -10,15 +10,9 @@ defmodule Ael.Web.FallbackController do
     |> render(EView.Views.Error, :"401")
   end
 
-  def call(conn, {:error, :not_found}) do
+  def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn
-    |> put_status(:not_found)
-    |> render(EView.Views.Error, :"404")
-  end
-
-  def call(conn, nil) do
-    conn
-    |> put_status(:not_found)
-    |> render(EView.Views.Error, :"404")
+    |> put_status(:unprocessable_entity)
+    |> render(EView.Views.ValidationError, :"422", changeset)
   end
 end

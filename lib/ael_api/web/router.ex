@@ -18,5 +18,7 @@ defmodule Ael.Web.Router do
 
   scope "/", Ael.Web do
     pipe_through :api
+
+    post "/media_content_storage_secrets", SecretController, :create
   end
 end
