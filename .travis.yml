@@ -40,8 +40,6 @@ script:
   - mix dogma
   # Build Docker container
   - ./bin/build.sh
-  # Initialize DB for Docker container
-  - MIX_ENV=dev mix ecto.setup
   # Run Docker container
   - sudo ./bin/start.sh
   - sleep 5
