@@ -1,0 +1,47 @@
+{
+  "name": "Ael",
+  "description": "Media content storage access control system that work on top of Signed URL's.",
+  "keywords": ["google cloud storage", "amazon s3", "s3", "access control", "signed url", "token rotation", "elixir"],
+  "repository": "https://github.com/nebo15/ael.api",
+  "success_url": "/",
+  "env": {
+    "HOST": {
+      "description": "HTTP host for web app to listen on.",
+      "value": "localhost"
+    },
+    "SECRET_KEY": {
+      "description": "Phoenix `:secret_key_base`.",
+      "required": true,
+      "generator": "secret"
+    },
+    "ERLANG_COOKIE": {
+      "description": "Erlang distribution cookie.",
+      "required": true,
+      "generator": "secret"
+    },
+    "MIX_ENV": {
+      "description": "Mix environment to use: test, dev, prod.",
+      "required": true,
+      "value": "prod"
+    }
+  },
+  "environments": {
+    "test": {
+      "env": {
+        "MIX_ENV": "test"
+      }
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/HashNuke/heroku-buildpack-elixir.git"
+    }
+  ],
+  "addons": []
+}
