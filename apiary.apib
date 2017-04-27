@@ -1,0 +1,139 @@
+FORMAT: 1A
+HOST: http://polls.apiblueprint.org/
+
+# Ael
+
+Ael is a media content storage access control system that allows to generate secrets 
+([Signed URL's](https://cloud.google.com/storage/docs/access-control/create-signed-urls-program))
+on demand. Secrets have configured TTL and allow to perform required actions within specific bucket 
+subtree, that allows to have fine-grained control over media storage contents.
+
+Clients can use secrets to directly access Google Cloud Storage or Amazon S3 via their API 
+([Google Cloud Storage API](https://cloud.google.com/storage/docs/xml-api/put-object-upload)), reducing 
+data delivery complexity, number places that have access to critical data and trafic costs for your project.
+
+Cloud storage buckets can have most restricted access rights, being available only for cloud account owners.
+
+Source code is available [on GitHub](https://github.com/Nebo15/ael.api).
+
+## Storage structure
+
+We expect following storage canical schema: `/{bucket}/{resource_id}/{resource_name}`.
+
+## Configuration structure
+
+```
+config Ael, :clients,
+    integration_layer: [
+        api_secret: "integration_layer_api_secret",
+        allows: [
+            %{methods: ["PUT", "HEAD"], canonical_url: "/testbucket/*"}
+        ]
+    ]
+```
+
+## Installation
+
+### Heroku One-click deployment
+
+  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nebo15/ael.api)
+
+### Docker
+
+  Images are available on [nebo15/ael_api](https://hub.docker.com/r/nebo15/ael_api/) Docker Hub.
+
+## License
+
+See [LICENSE.md](https://github.com/Nebo15/ael.api/blob/master/LICENSE.md)
+
+# Group Media Content Storage
+
+## Secrets [/media_content_storage_secrets]
+
+### Request a Secret [POST]
+
+Resource controller MAY use any authorization means to make sure that requesting side can have access to selected resource.
+
+Also it MAY NOT generate `PUT` or `POST` Signed URL's, so nobody could override existing resource.
+
++ Request (application/json)
+    + Attributes 
+        + secret (`MCS_Secret`)
++ Response 201 (application/json)
+    + Headers
+    
+            Location: http://storage.googleapis.com/google-testbucket/testdata.txt?GoogleAccessId=1234567890123@developer.gserviceaccount.com&Expires=1331155464&Signature=BClz9e4UA2MRRDX62TPd8sNpUCxVsqUDG3YGPWvPcwN%2BmWBPqwgUYcOSszCPlgWREeF7oPGowkeKk7J4WApzkzxERdOQmAdrvshKSzUHg8Jqp1lw9tbiJfE2ExdOOIoJVmGLoDeAGnfzCd4fTsWcLbal9sFpqXsQI8IQi1493mw%3D
+            
+    + Attributes (Response_OK)
+        + meta (Response__Meta)
+            + code: 201 (number)
+        + data (`MCS_Secret_Response`)
+
+# Data Structures
+## Responses
+### `Response_Collection`
++ meta (Response__Meta, fixed-type)
++ data (array[], fixed-type)
++ paging (Response__Pagination, fixed-type)
+
+### `Response_OK`
++ meta (Response__Meta, fixed-type)
++ data (object, fixed-type)
+
+### `Response_Error`
++ meta (Response__Meta, fixed-type)
+    + code: 400 (number)
++ error (Response__Error, fixed-type)
+
+### `Response__Meta`
++ code: 200 (number) - HTTP response code.
++ url: http://example.com/resource (string) - URL to requested resource.
++ type (enum) - Type of data that is located in `data` attribute.
+    - object (string) - `data` attribute is a JSON object.
+    - list (string) - `data` attribute is a list.
++ code: 200 (number) - HTTP response code.
++ `idempotency_key`: `idemp-ssjssdjoa8308u0us0` (string, optional) - [Idempotency key](http://docs.apimanifest.apiary.io/#introduction/optional-features/idempotent-requests). Send it trough `X-Idempotency-Key` header.
++ `request_id`: `req-adasdoijasdojsda` (string) - [Request ID](http://docs.apimanifest.apiary.io/#introduction/interacting-with-api/request-id). Send it with `X-Request-ID` header.
+
+### `Response__Error`
++ type: type_atom (string) - Atom that represents error type.
++ message: Error description (string) - Human-readable error message. This is for developers, not end-users.
+
+### `Response__Error_DuplicateEntity`
++ type: `object_already_exists` (string) - Atom that represents error type.
++ message: This API already exists (string) - Human-readable error message. This is for developers, not end-users.
+
+### `Response__Error_ValidationFailed`
++ type: validation_failed (string) - type of an error.
++ message: Validation failed. You can find validators description at our API Manifest: http://docs.apimanifest.apiary.io/#introduction/interacting-with-api/errors. (string)
++ invalid (array)
+    + `entry_type`: `json_data_proprty` (string) - Type of error.
+    + entry: $.cvv (string) - JSON Path to an invalid property.
+    + rules (array)
+        + rule: required (string) - String constant that represents validation rule type. List of all types can be found in [API Manifest](http://docs.apimanifest.apiary.io/#introduction/interacting-with-api/errors).
+        + params (array) - Validation Parameters.
+
+### `Response__Pagination`
++ limit: 20 (number) - A limit on the number of objects to be returned, between 1 and 100. Default: 50.
++ cursors (object)
+    + `starting_after`: 56c31536a60ad644060041af (string) - A cursor for use in pagination. An object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    + `ending_before`: 56c31536a60ad644060041aa (string) - A cursor for use in pagination. An object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
++ size: 1000 (number) - Total number of objects in collection.
++ has_more: false (boolean) - Is this collection have more data to load in the same style as last request loaded it.
+
+## `HTTP_Verb` (enum)
+- PUT (string) - Upload resource.
+- GET (string) - Download resource.
+- HEAD (string) - Validate resource existence.
+
+## `MCS_Secrets`
+### `MCS_Secret`
++ action (`HTTP_Verb`) - HTTP Verb that described action upon resource.
++ bucket: `google-testbucket` (string, required)
++ resource_id: `declaration-226eeacc-29a0-11e7-93ae-92361f002671` (string, required)
++ `resource_name`: `passport.jpeg` (string, required) - If omited, access will be requested for all resources within `resource_id` scope.
+
+### `MCS_Secret_Response` (`MCS_Secret`)
++ signed_url: `http://storage.googleapis.com/google-testbucket/testdata.txt?GoogleAccessId=1234567890123@developer.gserviceaccount.com&Expires=1331155464&Signature=BClz9e4UA2MRRDX62TPd8sNpUCxVsqUDG3YGPWvPcwN%2BmWBPqwgUYcOSszCPlgWREeF7oPGowkeKk7J4WApzkzxERdOQmAdrvshKSzUHg8Jqp1lw9tbiJfE2ExdOOIoJVmGLoDeAGnfzCd4fTsWcLbal9sFpqXsQI8IQi1493mw%3D` (string, required) - Signed URL.
++ expires_at: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone when Signed URL expires.
++ created_at: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone when Signed URL was created.
