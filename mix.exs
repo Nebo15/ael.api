@@ -26,7 +26,8 @@ defmodule Ael.Mixfile do
     [extra_applications: [:logger, :confex, :runtime_tools, :logger_json, :poison,
                           :cowboy, :httpoison,
                           :phoenix, :multiverse,
-                          :eview, :ecto, :phoenix_ecto],
+                          :eview, :ecto, :phoenix_ecto,
+                          :crypto, :public_key],
      mod: {Ael, []}]
   end
 

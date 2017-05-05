@@ -17,5 +17,5 @@ config :logger, level: :warn
 config :ael_api, sql_sandbox: true
 
 config :ael_api,
-  known_buckets: ["declarations"],
+  known_buckets: ["declarations-dev"],
   secret_ttl: 600 # seconds

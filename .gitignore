@@ -47,3 +47,6 @@ uploads/
 *id_rsa*
 *.key
 *.csr
+
+# Don't publish development secrets
+test/fixtures/service_account_key.json

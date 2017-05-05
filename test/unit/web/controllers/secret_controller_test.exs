@@ -3,7 +3,7 @@ defmodule Ael.Web.SecretControllerTest do
 
   @create_attrs %{
     action: "GET",
-    bucket: "declarations",
+    bucket: "declarations-dev",
     resource_id: "uuid",
     resource_name: "passport.jpg"
   }
@@ -26,7 +26,7 @@ defmodule Ael.Web.SecretControllerTest do
       "type" => "secret",
       "data" => %{
         "action" => "GET",
-        "bucket" => "declarations",
+        "bucket" => "declarations-dev",
         "resource_id" => "uuid",
         "resource_name" => "passport.jpg",
         "secret_url" => secret_url,
