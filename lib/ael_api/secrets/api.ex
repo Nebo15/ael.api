@@ -19,15 +19,12 @@ defmodule Ael.Secrets.API do
   {:PrivateKeyInfo, :v1, {:PrivateKeyInfo_privateKeyAlgorithm, {1, 2, 840, 113549, 1, 1, 1}, {:asn1_OPENTYPE, <<5, 0>>}}, der, :asn1_NOVALUE} =
     gcs_service_account
     |> Map.get("private_key")
-    # |> String.to_charlist()
     |> :public_key.pem_decode
     |> List.first
     |> :public_key.pem_entry_decode
 
-  IO.inspect :public_key.der_decode(:'pkcs-1', der)
-
-  @gcs_service_account_id Map.get(gcs_service_account, "client_id")
-  @gcs_service_account_key #[e, n, d]
+  @gcs_service_account_id Map.get(gcs_service_account, "client_email") |> URI.encode_www_form()
+  @gcs_service_account_key :public_key.der_decode(:'RSAPrivateKey', der)
 
   @doc """
   Creates a secret.
@@ -72,24 +69,35 @@ defmodule Ael.Secrets.API do
     |> Map.put(:inserted_at, now)
   end
 
-  defp put_secret_url(%Secret{} = secret) do
-    %{action: action, expires_at: expires_at} = secret
+  defp put_secret_url(%Secret{action: action, expires_at: expires_at} = secret) do
     canonicalized_resource = get_canonicalized_resource(secret)
-
-    string_to_sign = "#{action}\n#{expires_at}\n#{canonicalized_resource}"
-
-    IO.inspect :crypto.private_encrypt(:rsa, string_to_sign, @gcs_service_account_key, :rsa_no_padding)
-
+    expires_at = iso8601_to_unix(expires_at)
     signature =
-      string_to_sign
-      |> Base.encode64()
-      |> URI.encode()
+      action
+      |> string_to_sign(expires_at, canonicalized_resource)
+      |> base64_sign()
 
     secret
     |> Map.put(:secret_url, "https://storage.googleapis.com#{canonicalized_resource}" <>
-                            "?GoogleAccessId=#{@gcs_service_account_id}&" <>
-                            "Expires=#{expires_at}" <>
+                            "?GoogleAccessId=#{@gcs_service_account_id}" <>
+                            "&Expires=#{expires_at}" <>
                             "&Signature=#{signature}")
+  end
+
+  def string_to_sign(action, expires_at, canonicalized_resource) do
+    Enum.join([action, "", "", expires_at, canonicalized_resource], "\n")
+  end
+
+  def base64_sign(plaintext) do
+    plaintext
+    |> :public_key.sign(:sha256, @gcs_service_account_key)
+    |> Base.encode64()
+    |> URI.encode_www_form()
+  end
+
+  def iso8601_to_unix(datetime) do
+    {:ok, datetime, _} = DateTime.from_iso8601(datetime)
+    DateTime.to_unix(datetime)
   end
 
   defp get_canonicalized_resource(%Secret{bucket: bucket, resource_id: resource_id, resource_name: resource_name})
