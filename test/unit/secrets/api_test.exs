@@ -7,7 +7,7 @@ defmodule Ael.Secrets.APITest do
     action = "PUT"
     bucket = "declarations-dev"
     resource_id = "uuid"
-    resource_name = "passport.jpg"
+    resource_name = "test.txt"
 
     {:ok, secret} = API.create_secret(%{
       action: action,
@@ -26,7 +26,7 @@ defmodule Ael.Secrets.APITest do
       secret_url: secret_url
     } = secret
 
-    assert "https://storage.googleapis.com/declarations-dev/uuid/passport.jpg?GoogleAccessId=" <> _ = secret_url
+    assert "https://storage.googleapis.com/declarations-dev/uuid/test.txt?GoogleAccessId=" <> _ = secret_url
 
     file_path = "test/fixtures/secret.txt"
 

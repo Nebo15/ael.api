@@ -24,6 +24,8 @@ branches:
   # Releases are generated automatically, stop infinite build loop
   except:
     - /[0-9]*\.[0-9]*\.[0-9]*/
+before_install:
+  openssl aes-256-cbc -K $encrypted_2fbea6458a09_key -iv $encrypted_2fbea6458a09_iv -in priv/secret.enc -out priv/service_account_key.json -d
 script:
   # Increment version in mix.exs
   - ./bin/ci/version-increment.sh

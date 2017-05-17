@@ -49,4 +49,4 @@ uploads/
 *.csr
 
 # Don't publish development secrets
-test/fixtures/service_account_key.json
+priv/service_account_key.json
