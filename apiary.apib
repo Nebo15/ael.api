@@ -62,7 +62,7 @@ Also it MAY NOT generate `PUT` or `POST` Signed URL's, so nobody could override 
 + Response 201 (application/json)
     + Headers
     
-            Location: http://storage.googleapis.com/google-testbucket/testdata.txt?GoogleAccessId=1234567890123@developer.gserviceaccount.com&Expires=1331155464&Signature=BClz9e4UA2MRRDX62TPd8sNpUCxVsqUDG3YGPWvPcwN%2BmWBPqwgUYcOSszCPlgWREeF7oPGowkeKk7J4WApzkzxERdOQmAdrvshKSzUHg8Jqp1lw9tbiJfE2ExdOOIoJVmGLoDeAGnfzCd4fTsWcLbal9sFpqXsQI8IQi1493mw%3D
+            Location: http://storage.googleapis.com/declaration-226eeacc-29a0-11e7-93ae-92361f002671/passport.jpeg?GoogleAccessId=1234567890123@developer.gserviceaccount.com&Expires=1331155464&Signature=BClz9e4UA2MRRDX62TPd8sNpUCxVsqUDG3YGPWvPcwN%2BmWBPqwgUYcOSszCPlgWREeF7oPGowkeKk7J4WApzkzxERdOQmAdrvshKSzUHg8Jqp1lw9tbiJfE2ExdOOIoJVmGLoDeAGnfzCd4fTsWcLbal9sFpqXsQI8IQi1493mw%3D
             
     + Attributes (Response_OK)
         + meta (Response__Meta)
@@ -134,6 +134,6 @@ Also it MAY NOT generate `PUT` or `POST` Signed URL's, so nobody could override 
 + `resource_name`: `passport.jpeg` (string, required) - If omited, access will be requested for all resources within `resource_id` scope.
 
 ### `MCS_Secret_Response` (`MCS_Secret`)
-+ signed_url: `http://storage.googleapis.com/google-testbucket/testdata.txt?GoogleAccessId=1234567890123@developer.gserviceaccount.com&Expires=1331155464&Signature=BClz9e4UA2MRRDX62TPd8sNpUCxVsqUDG3YGPWvPcwN%2BmWBPqwgUYcOSszCPlgWREeF7oPGowkeKk7J4WApzkzxERdOQmAdrvshKSzUHg8Jqp1lw9tbiJfE2ExdOOIoJVmGLoDeAGnfzCd4fTsWcLbal9sFpqXsQI8IQi1493mw%3D` (string, required) - Signed URL.
++ signed_url: `http://storage.googleapis.com/google-testbucket/declaration-226eeacc-29a0-11e7-93ae-92361f002671/passport.jpeg?GoogleAccessId=1234567890123@developer.gserviceaccount.com&Expires=1331155464&Signature=BClz9e4UA2MRRDX62TPd8sNpUCxVsqUDG3YGPWvPcwN%2BmWBPqwgUYcOSszCPlgWREeF7oPGowkeKk7J4WApzkzxERdOQmAdrvshKSzUHg8Jqp1lw9tbiJfE2ExdOOIoJVmGLoDeAGnfzCd4fTsWcLbal9sFpqXsQI8IQi1493mw%3D` (string, required) - Signed URL.
 + expires_at: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone when Signed URL expires.
 + created_at: `2017-04-20T19:14:13Z` (string, required) - ISO 8601 date and time in UTC timezone when Signed URL was created.
