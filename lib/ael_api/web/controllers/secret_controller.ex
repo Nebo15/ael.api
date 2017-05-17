@@ -10,7 +10,7 @@ defmodule Ael.Web.SecretController do
     with {:ok, %Secret{} = secret} <- API.create_secret(secret_params) do
       conn
       |> put_status(:created)
-      # |> put_resp_header("location", secret_path(conn, :show, secret))
+#      |> put_resp_header("location", secret_path(conn, :show, secret))
       |> render("show.json", secret: secret)
     end
   end
