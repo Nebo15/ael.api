@@ -1,4 +1,6 @@
 defmodule Ael.Secrets.Secret do
+  @moduledoc false
+
   use Ecto.Schema
 
   @primary_key false

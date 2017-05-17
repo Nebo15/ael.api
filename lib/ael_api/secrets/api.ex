@@ -16,7 +16,11 @@ defmodule Ael.Secrets.API do
     |> File.read!()
     |> Poison.decode!()
 
-  {:PrivateKeyInfo, :v1, {:PrivateKeyInfo_privateKeyAlgorithm, {1, 2, 840, 113549, 1, 1, 1}, {:asn1_OPENTYPE, <<5, 0>>}}, der, :asn1_NOVALUE} =
+  {:PrivateKeyInfo,
+    :v1,
+    {:PrivateKeyInfo_privateKeyAlgorithm, {1, 2, 840, 113_549, 1, 1, 1}, {:asn1_OPENTYPE, <<5, 0>>}},
+    der,
+    :asn1_NOVALUE} =
     gcs_service_account
     |> Map.get("private_key")
     |> :public_key.pem_decode

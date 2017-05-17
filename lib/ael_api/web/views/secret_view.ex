@@ -1,4 +1,6 @@
 defmodule Ael.Web.SecretView do
+  @moduledoc false
+
   use Ael.Web, :view
   alias Ael.Web.SecretView
 

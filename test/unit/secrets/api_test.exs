@@ -12,7 +12,7 @@ defmodule Ael.Secrets.APITest do
     {:ok, secret} = API.create_secret(%{
       action: action,
       bucket: bucket,
-      resource_id: "uuid",
+      resource_id: resource_id,
       resource_name: resource_name
     })
 
@@ -21,7 +21,7 @@ defmodule Ael.Secrets.APITest do
       bucket: ^bucket,
       expires_at: _,
       inserted_at: _,
-      resource_id: resource_id,
+      resource_id: ^resource_id,
       resource_name: resource_name,
       secret_url: secret_url
     } = secret
@@ -36,7 +36,7 @@ defmodule Ael.Secrets.APITest do
       {"Cache-Control", "no-cache"},
       {"Content-Type", ""},
     ]
-    %HTTPoison.Response{body: body, status_code: code} = HTTPoison.put!(secret.secret_url, {:file, file_path}, headers)
+    %HTTPoison.Response{body: _, status_code: code} = HTTPoison.put!(secret.secret_url, {:file, file_path}, headers)
 
     assert 200 == code
 
@@ -46,7 +46,7 @@ defmodule Ael.Secrets.APITest do
       resource_id: resource_id,
       resource_name: resource_name
     })
-IO.inspect(secret.secret_url)
+
     %HTTPoison.Response{body: body, status_code: code} = HTTPoison.get!(secret.secret_url)
     assert 200 == code
     assert File.read!(file_path) == body
