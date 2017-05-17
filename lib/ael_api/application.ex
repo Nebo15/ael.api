@@ -17,6 +17,7 @@ defmodule Ael do
     children = [
       # Start the endpoint when the application starts
       supervisor(Ael.Web.Endpoint, []),
+      supervisor(Registry, [:unique, Ael.Registry]),
       # Starts a worker by calling: Ael.Worker.start_link(arg1, arg2, arg3)
       # worker(Ael.Worker, [arg1, arg2, arg3]),
     ]
@@ -24,7 +25,11 @@ defmodule Ael do
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Ael.Supervisor]
-    Supervisor.start_link(children, opts)
+
+    application = Supervisor.start_link(children, opts)
+    register_gcs_config()
+
+    application
   end
 
   # Tell Phoenix to update the endpoint configuration
@@ -32,6 +37,32 @@ defmodule Ael do
   def config_change(changed, _new, removed) do
     Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  def register_gcs_config do
+    gcs_service_account = load_gcs_service_config()
+
+    {:PrivateKeyInfo,
+      :v1,
+      {:PrivateKeyInfo_privateKeyAlgorithm, {1, 2, 840, 113_549, 1, 1, 1}, {:asn1_OPENTYPE, <<5, 0>>}},
+      der,
+      :asn1_NOVALUE} =
+      gcs_service_account
+      |> Map.get("private_key")
+      |> :public_key.pem_decode
+      |> List.first
+      |> :public_key.pem_entry_decode
+
+    Registry.register(Ael.Registry, :gcs_service_account_id, Map.get(gcs_service_account, "client_email"))
+    Registry.register(Ael.Registry, :gcs_service_account_key, :public_key.der_decode(:'RSAPrivateKey', der))
+  end
+
+  def load_gcs_service_config do
+    :ael_api
+    |> Confex.get_map(:google_cloud_storage)
+    |> Keyword.get(:service_account_key_path)
+    |> File.read!()
+    |> Poison.decode!()
   end
 
   # Configures Logger level via LOG_LEVEL environment variable.

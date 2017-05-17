@@ -9,27 +9,6 @@ defmodule Ael.Secrets.API do
   @secrets_ttl Confex.get(:ael_api, :secrets_ttl) || raise ArgumentError, "Can not read SECRETS_TTL env."
   @known_buckets Confex.get(:ael_api, :known_buckets) || raise ArgumentError, "Can not read KNOWN_BUCKETS env."
 
-  gcs_service_account =
-    :ael_api
-    |> Confex.get_map(:google_cloud_storage)
-    |> Keyword.get(:service_account_key_path)
-    |> File.read!()
-    |> Poison.decode!()
-
-  {:PrivateKeyInfo,
-    :v1,
-    {:PrivateKeyInfo_privateKeyAlgorithm, {1, 2, 840, 113_549, 1, 1, 1}, {:asn1_OPENTYPE, <<5, 0>>}},
-    der,
-    :asn1_NOVALUE} =
-    gcs_service_account
-    |> Map.get("private_key")
-    |> :public_key.pem_decode
-    |> List.first
-    |> :public_key.pem_entry_decode
-
-  @gcs_service_account_id Map.get(gcs_service_account, "client_email")
-  @gcs_service_account_key :public_key.der_decode(:'RSAPrivateKey', der)
-
   @doc """
   Creates a secret.
 
@@ -83,7 +62,7 @@ defmodule Ael.Secrets.API do
 
     secret
     |> Map.put(:secret_url, "https://storage.googleapis.com#{canonicalized_resource}" <>
-                            "?GoogleAccessId=#{@gcs_service_account_id}" <>
+                            "?GoogleAccessId=#{get_gcs_service_account_id()}" <>
                             "&Expires=#{expires_at}" <>
                             "&Signature=#{signature}")
   end
@@ -94,7 +73,7 @@ defmodule Ael.Secrets.API do
 
   def base64_sign(plaintext) do
     plaintext
-    |> :public_key.sign(:sha256, @gcs_service_account_key)
+    |> :public_key.sign(:sha256, get_gcs_service_account_key())
     |> Base.encode64()
     |> URI.encode_www_form()
   end
@@ -102,6 +81,16 @@ defmodule Ael.Secrets.API do
   def iso8601_to_unix(datetime) do
     {:ok, datetime, _} = DateTime.from_iso8601(datetime)
     DateTime.to_unix(datetime)
+  end
+
+  defp get_gcs_service_account_id do
+    [{_pid, account_id}] = Registry.lookup(Ael.Registry, :gcs_service_account_id)
+    account_id
+  end
+
+  defp get_gcs_service_account_key do
+    [{_pid, account_key}] = Registry.lookup(Ael.Registry, :gcs_service_account_key)
+    account_key
   end
 
   defp get_canonicalized_resource(%Secret{bucket: bucket, resource_id: resource_id, resource_name: resource_name})
