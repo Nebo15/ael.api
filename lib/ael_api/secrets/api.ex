@@ -23,7 +23,7 @@ defmodule Ael.Secrets.API do
     |> List.first
     |> :public_key.pem_entry_decode
 
-  @gcs_service_account_id Map.get(gcs_service_account, "client_email") |> URI.encode_www_form()
+  @gcs_service_account_id Map.get(gcs_service_account, "client_email")
   @gcs_service_account_key :public_key.der_decode(:'RSAPrivateKey', der)
 
   @doc """

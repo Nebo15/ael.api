@@ -4,26 +4,52 @@ defmodule Ael.Secrets.APITest do
   alias Ael.Secrets.Secret
 
   test "signes url's with resource name" do
+    action = "PUT"
+    bucket = "declarations-dev"
+    resource_id = "uuid"
+    resource_name = "passport.jpg"
+
     {:ok, secret} = API.create_secret(%{
-      action: "PUT",
-      bucket: "declarations-dev",
+      action: action,
+      bucket: bucket,
       resource_id: "uuid",
-      resource_name: "passport.jpg"
+      resource_name: resource_name
     })
 
     assert %Secret{
-      action: "PUT",
-      bucket: "declarations-dev",
+      action: ^action,
+      bucket: ^bucket,
       expires_at: _,
       inserted_at: _,
-      resource_id: "uuid",
-      resource_name: "passport.jpg",
+      resource_id: resource_id,
+      resource_name: resource_name,
       secret_url: secret_url
     } = secret
 
-    assert "https://storage.googleapis.com/declarations-dev/uuid/passport.jpg" <> _ = secret_url
+    assert "https://storage.googleapis.com/declarations-dev/uuid/passport.jpg?GoogleAccessId=" <> _ = secret_url
 
-    IO.inspect secret
+    file_path = "test/fixtures/secret.txt"
+
+    headers = [
+      {"Accept", "*/*"},
+      {"Connection", "close"},
+      {"Cache-Control", "no-cache"},
+      {"Content-Type", ""},
+    ]
+    %HTTPoison.Response{body: body, status_code: code} = HTTPoison.put!(secret.secret_url, {:file, file_path}, headers)
+
+    assert 200 == code
+
+    {:ok, secret} = API.create_secret(%{
+      action: "GET",
+      bucket: bucket,
+      resource_id: resource_id,
+      resource_name: resource_name
+    })
+IO.inspect(secret.secret_url)
+    %HTTPoison.Response{body: body, status_code: code} = HTTPoison.get!(secret.secret_url)
+    assert 200 == code
+    assert File.read!(file_path) == body
   end
 
   test "signes url's without resource name" do
