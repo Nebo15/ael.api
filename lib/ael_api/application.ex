@@ -26,9 +26,10 @@ defmodule Ael do
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Ael.Supervisor]
 
-    children
-    |> Supervisor.start_link(opts)
-    |> register_gcs_config()
+    application = Supervisor.start_link(children, opts)
+    register_gcs_config()
+
+    application
   end
 
   # Tell Phoenix to update the endpoint configuration
@@ -38,7 +39,7 @@ defmodule Ael do
     :ok
   end
 
-  def register_gcs_config(application) do
+  def register_gcs_config do
     gcs_service_account = load_gcs_service_config()
 
     {:PrivateKeyInfo,
@@ -54,8 +55,6 @@ defmodule Ael do
 
     Registry.register(Ael.Registry, :gcs_service_account_id, Map.get(gcs_service_account, "client_email"))
     Registry.register(Ael.Registry, :gcs_service_account_key, :public_key.der_decode(:'RSAPrivateKey', der))
-
-    application
   end
 
   def load_gcs_service_config do
