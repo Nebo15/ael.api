@@ -53,7 +53,7 @@ config :ael_api,
   secrets_ttl: {:system, :integer, "SECRETS_TTL", 600} # seconds
 
 config :ael_api, :google_cloud_storage,
-  service_account_key_path: "test/fixtures/service_account_key.json"
+  service_account_key_path: {:system, "SERVICE_ACCOUNT_KEY_PATH", "priv/service_account_key.json"}
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
