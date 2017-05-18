@@ -19,6 +19,10 @@ config :ael_api, Ael.Web.Endpoint,
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 
+config :ael_api,
+  known_buckets: {:system, :list, "KNOWN_BUCKETS", ["legal-entities-dev"]},
+  secrets_ttl: {:system, :integer, "SECRETS_TTL", 600} # seconds
+
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
