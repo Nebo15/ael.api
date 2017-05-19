@@ -49,7 +49,7 @@ config :logger_json, :backend,
   metadata: :all
 
 config :ael_api,
-  known_buckets: {:system, :list, "KNOWN_BUCKETS", []},
+  known_buckets: {:system, :list, "KNOWN_BUCKETS", ["legal-entities-dev"]},
   secrets_ttl: {:system, :integer, "SECRETS_TTL", 600} # seconds
 
 config :ael_api, :google_cloud_storage,
