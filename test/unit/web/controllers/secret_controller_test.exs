@@ -23,16 +23,13 @@ defmodule Ael.Web.SecretControllerTest do
   test "creates secret and renders secret when data is valid", %{conn: conn} do
     conn = post conn, secret_path(conn, :create), secret: @create_attrs
     assert  %{
-      "type" => "secret",
-      "data" => %{
-        "action" => "GET",
-        "bucket" => "declarations-dev",
-        "resource_id" => "uuid",
-        "resource_name" => "passport.jpg",
-        "secret_url" => secret_url,
-        "expires_at" => expires_at,
-        "inserted_at" => inserted_at,
-      }
+      "action" => "GET",
+      "bucket" => "declarations-dev",
+      "resource_id" => "uuid",
+      "resource_name" => "passport.jpg",
+      "secret_url" => secret_url,
+      "expires_at" => expires_at,
+      "inserted_at" => inserted_at,
     } = json_response(conn, 201)["data"]
 
     {:ok, expires_at, 0} = DateTime.from_iso8601(expires_at)
