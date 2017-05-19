@@ -107,6 +107,9 @@ defmodule Ael.Secrets.API do
   @verbs ["PUT", "GET", "HEAD"]
 
   defp secret_changeset(%Secret{} = secret, attrs) do
+    require Logger
+    Logger.error("buckets: #{inspect(@known_buckets)}")
+
     secret
     |> cast(attrs, @attrs)
     |> validate_required(@required_attrs)
