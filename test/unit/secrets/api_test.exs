@@ -4,20 +4,14 @@ defmodule Ael.Secrets.APITest do
   alias Ael.Secrets.Secret
 
   test "signes url's with resource name" do
-    action = "PUT"
     bucket = "declarations-dev"
     resource_id = "uuid"
     resource_name = "test.txt"
 
-    {:ok, secret} = API.create_secret(%{
-      action: action,
-      bucket: bucket,
-      resource_id: resource_id,
-      resource_name: resource_name
-    })
+    secret = create_secret("PUT", bucket, resource_id, resource_name)
 
     assert %Secret{
-      action: ^action,
+      action: "PUT",
       bucket: ^bucket,
       expires_at: _,
       inserted_at: _,
@@ -40,24 +34,19 @@ defmodule Ael.Secrets.APITest do
 
     assert 200 == code
 
-    {:ok, secret} = API.create_secret(%{
-      action: "GET",
-      bucket: bucket,
-      resource_id: resource_id,
-      resource_name: resource_name
-    })
+    secret = create_secret("GET", bucket, resource_id, resource_name)
 
     %HTTPoison.Response{body: body, status_code: code} = HTTPoison.get!(secret.secret_url)
     assert 200 == code
     assert File.read!(file_path) == body
+
+    secret = create_secret("HEAD", bucket, resource_id, resource_name)
+    %HTTPoison.Response{status_code: code} = HTTPoison.head!(secret.secret_url)
+    assert 200 == code
   end
 
   test "signes url's without resource name" do
-    {:ok, secret} = API.create_secret(%{
-      action: "PUT",
-      bucket: "declarations-dev",
-      resource_id: "uuid"
-    })
+    secret = create_secret("PUT", "declarations-dev", "uuid")
 
     assert %Secret{
       action: "PUT",
@@ -69,5 +58,15 @@ defmodule Ael.Secrets.APITest do
     } = secret
 
     assert "https://storage.googleapis.com/declarations-dev/uuid" <> _ = secret_url
+  end
+
+  def create_secret(action, bucket, resource_id, resource_name \\ nil) do
+    {:ok, secret} = API.create_secret(%{
+      action: action,
+      bucket: bucket,
+      resource_id: resource_id,
+      resource_name: resource_name,
+    })
+    secret
   end
 end
