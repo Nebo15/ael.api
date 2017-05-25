@@ -20,7 +20,7 @@ config :ael_api, Ael.Web.Endpoint,
 config :logger, :console, format: "[$level] $message\n"
 
 config :ael_api,
-  known_buckets: {:system, :list, "KNOWN_BUCKETS", ["legal-entities-dev"]},
+  known_buckets: {:system, :list, "KNOWN_BUCKETS", ["declarations-dev", "legal-entities-dev"]},
   secrets_ttl: {:system, :integer, "SECRETS_TTL", 600} # seconds
 
 # Set a higher stacktrace during development. Avoid configuring such

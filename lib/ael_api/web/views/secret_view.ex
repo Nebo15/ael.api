@@ -5,7 +5,7 @@ defmodule Ael.Web.SecretView do
   alias Ael.Web.SecretView
 
   def render("show.json", %{secret: secret}) do
-    %{data: render_one(secret, SecretView, "secret.json")}
+    render_one(secret, SecretView, "secret.json")
   end
 
   def render("secret.json", %{secret: secret}) do

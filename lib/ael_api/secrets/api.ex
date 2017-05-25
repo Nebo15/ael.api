@@ -6,9 +6,6 @@ defmodule Ael.Secrets.API do
   alias Ecto.Changeset
   alias Ael.Secrets.Secret
 
-  @secrets_ttl Confex.get(:ael_api, :secrets_ttl) || raise ArgumentError, "Can not read SECRETS_TTL env."
-  @known_buckets Confex.get(:ael_api, :known_buckets) || raise ArgumentError, "Can not read KNOWN_BUCKETS env."
-
   @doc """
   Creates a secret.
 
@@ -43,7 +40,7 @@ defmodule Ael.Secrets.API do
     expires_at =
       now
       |> DateTime.to_unix()
-      |> Kernel.+(@secrets_ttl)
+      |> Kernel.+(get_gcs_signed_url_ttl())
       |> DateTime.from_unix!()
       |> DateTime.to_iso8601()
 
@@ -83,16 +80,6 @@ defmodule Ael.Secrets.API do
     DateTime.to_unix(datetime)
   end
 
-  defp get_gcs_service_account_id do
-    [{_pid, account_id}] = Registry.lookup(Ael.Registry, :gcs_service_account_id)
-    account_id
-  end
-
-  defp get_gcs_service_account_key do
-    [{_pid, account_key}] = Registry.lookup(Ael.Registry, :gcs_service_account_key)
-    account_key
-  end
-
   defp get_canonicalized_resource(%Secret{bucket: bucket, resource_id: resource_id, resource_name: resource_name})
     when is_binary(resource_name) and resource_name != "" do
     "/#{bucket}/#{resource_id}/#{resource_name}"
@@ -111,6 +98,27 @@ defmodule Ael.Secrets.API do
     |> cast(attrs, @attrs)
     |> validate_required(@required_attrs)
     |> validate_inclusion(:action, @verbs)
-    |> validate_inclusion(:bucket, @known_buckets)
+    |> validate_inclusion(:bucket, get_gcs_allowed_buckets())
+  end
+
+  defp get_gcs_service_account_id do
+    get_from_registry(:gcs_service_account_id)
+  end
+
+  defp get_gcs_service_account_key do
+    get_from_registry(:gcs_service_account_key)
+  end
+
+  defp get_gcs_signed_url_ttl do
+    get_from_registry(:gcs_service_secrets_ttl)
+  end
+
+  defp get_gcs_allowed_buckets do
+    get_from_registry(:gcs_service_known_buckets)
+  end
+
+  defp get_from_registry(key) do
+    [{_pid, val}] = Registry.lookup(Ael.Registry, key)
+    val
   end
 end
