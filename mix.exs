@@ -23,11 +23,7 @@ defmodule Ael.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [extra_applications: [:logger, :confex, :runtime_tools, :logger_json, :poison,
-                          :cowboy, :httpoison,
-                          :phoenix, :multiverse,
-                          :eview, :ecto, :phoenix_ecto,
-                          :crypto, :public_key],
+    [extra_applications: [:logger, :runtime_tools, :crypto, :public_key],
      mod: {Ael, []}]
   end
 
