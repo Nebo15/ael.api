@@ -1,5 +1,7 @@
 # Ael
 
+[![Build Status](https://travis-ci.org/Nebo15/ael.api.svg?branch=master)](https://travis-ci.org/Nebo15/ael.api) [![Coverage Status](https://coveralls.io/repos/github/Nebo15/ael.api/badge.svg)](https://coveralls.io/github/Nebo15/ael.api)
+
 Ael is a media content storage access control system that allows to generate secrets
 ([Signed URL's](https://cloud.google.com/storage/docs/access-control/create-signed-urls-program))
 on demand. Secrets have configured TTL and allow to perform required actions within specific bucket
