@@ -11,7 +11,10 @@ environment :default do
   set dev_mode: false
   set include_erts: false
   set include_src: false
-  set cookie: cookie
+  set cookie: cookie,
+  set overlays: [
+    {:template, "rel/templates/vm.args.eex", "releases/<%= release_version %>/vm.args"}
+  ]
 end
 
 release :ael_api do
