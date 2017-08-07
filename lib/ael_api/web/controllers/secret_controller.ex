@@ -14,4 +14,10 @@ defmodule Ael.Web.SecretController do
       |> render("show.json", secret: secret)
     end
   end
+
+  def validate(conn, params) do
+    with {:ok, is_valid} <- API.validate_entity(params) do
+      render(conn, "validator.json", is_valid: is_valid)
+    end
+  end
 end
