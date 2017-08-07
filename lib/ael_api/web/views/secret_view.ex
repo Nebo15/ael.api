@@ -17,4 +17,8 @@ defmodule Ael.Web.SecretView do
       expires_at: secret.expires_at,
       inserted_at: secret.inserted_at}
   end
+
+  def render("validator.json", %{is_valid: is_valid}) do
+    %{is_valid: is_valid}
+  end
 end
