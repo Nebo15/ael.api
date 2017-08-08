@@ -20,5 +20,6 @@ defmodule Ael.Web.Router do
     pipe_through :api
 
     post "/media_content_storage_secrets", SecretController, :create
+    post "/validate_signed_entity", SecretController, :validate
   end
 end
