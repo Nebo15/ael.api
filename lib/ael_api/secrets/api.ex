@@ -4,7 +4,15 @@ defmodule Ael.Secrets.API do
   """
   import Ecto.Changeset, warn: false
   alias Ecto.Changeset
+  alias Ael.API.Signature
   alias Ael.Secrets.Secret
+  alias Ael.Secrets.Validator
+
+  @secret_attrs ~w(action bucket resource_id resource_name)a
+  @required_secret_attrs ~w(action bucket resource_id)a
+  @validator_attrs ~w(url)a
+  @required_validator_attrs ~w(url)a
+  @verbs ~w(PUT GET HEAD)
 
   @doc """
   Creates a secret.
@@ -80,6 +88,18 @@ defmodule Ael.Secrets.API do
     DateTime.to_unix(datetime)
   end
 
+  def validate_entity(params) do
+    with %Ecto.Changeset{valid?: true} = changeset <- validation_changeset(%Validator{}, params),
+         {:ok, %HTTPoison.Response{body: body}} <- get_signed_content(changeset),
+         {:ok, %{"data" => %{"is_valid" => true, "content" => content}}} <- validate_signed_content(body)
+    do
+      {:ok, validate_rules(content, Changeset.apply_changes(changeset))}
+    else
+      # False in all other cases
+      _ -> {:ok, false}
+    end
+  end
+
   defp get_canonicalized_resource(%Secret{bucket: bucket, resource_id: resource_id, resource_name: resource_name})
     when is_binary(resource_name) and resource_name != "" do
     "/#{bucket}/#{resource_id}/#{resource_name}"
@@ -89,16 +109,19 @@ defmodule Ael.Secrets.API do
     "/#{bucket}/#{resource_id}"
   end
 
-  @attrs [:action, :bucket, :resource_id, :resource_name]
-  @required_attrs [:action, :bucket, :resource_id]
-  @verbs ["PUT", "GET", "HEAD"]
-
   defp secret_changeset(%Secret{} = secret, attrs) do
     secret
-    |> cast(attrs, @attrs)
-    |> validate_required(@required_attrs)
+    |> cast(attrs, @secret_attrs)
+    |> validate_required(@required_secret_attrs)
     |> validate_inclusion(:action, @verbs)
     |> validate_inclusion(:bucket, get_gcs_allowed_buckets())
+  end
+
+  defp validation_changeset(%Validator{} = validator, attrs) do
+    validator
+    |> cast(attrs, @validator_attrs)
+    |> validate_required(@required_validator_attrs)
+    |> cast_embed(:rules, required: true, with: &Validator.rule_changeset/2)
   end
 
   defp get_gcs_service_account_id do
@@ -120,5 +143,26 @@ defmodule Ael.Secrets.API do
   defp get_from_registry(key) do
     [{_pid, val}] = Registry.lookup(Ael.Registry, key)
     val
+  end
+
+  defp validate_rules(content, %Validator{rules: rules}) do
+    Enum.all?(rules, fn rule ->
+      case rule do
+        %{"type" => "eq", "field" => field, "value" => value} ->
+          to_string(get_in(content, field)) == to_string(value)
+        _ ->
+          true
+      end
+    end)
+  end
+
+  defp validate_signed_content(body) do
+    Signature.decode_and_validate(Base.encode64(body), "base64")
+  end
+
+  defp get_signed_content(changeset) do
+    changeset
+    |> Changeset.get_change(:url)
+    |> HTTPoison.get
   end
 end

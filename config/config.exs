@@ -52,6 +52,15 @@ config :ael_api,
   known_buckets: {:system, :list, "KNOWN_BUCKETS", []},
   secrets_ttl: {:system, :integer, "SECRETS_TTL", 600} # seconds
 
+# Configures Digital Signature API
+config :ael_api, Ael.API.Signature,
+  endpoint: {:system, "DIGITAL_SIGNATURE_ENDPOINT", "http://35.187.186.145"},
+  timeouts: [
+    connect_timeout: {:system, :integer, "DIGITAL_SIGNATURE_REQUEST_TIMEOUT", 30_000},
+    recv_timeout: {:system, :integer, "DIGITAL_SIGNATURE_REQUEST_TIMEOUT", 30_000},
+    timeout: {:system, :integer, "DIGITAL_SIGNATURE_REQUEST_TIMEOUT", 30_000}
+  ]
+
 config :ael_api, :google_cloud_storage,
   service_account_key_path: {:system, "SERVICE_ACCOUNT_KEY_PATH", "priv/service_account_key.json"}
 
