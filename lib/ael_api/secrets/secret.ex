@@ -9,6 +9,7 @@ defmodule Ael.Secrets.Secret do
     field :bucket, :string
     field :resource_id, :string
     field :resource_name, :string
+    field :content_type, :string, default: ""
     field :secret_url, :string
 
     field :expires_at, :utc_datetime
