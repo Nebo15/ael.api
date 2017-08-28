@@ -8,7 +8,7 @@ defmodule Ael.Secrets.API do
   alias Ael.Secrets.Secret
   alias Ael.Secrets.Validator
 
-  @secret_attrs ~w(action bucket resource_id resource_name)a
+  @secret_attrs ~w(action bucket resource_id resource_name content_type)a
   @required_secret_attrs ~w(action bucket resource_id)a
   @validator_attrs ~w(url)a
   @required_validator_attrs ~w(url)a
@@ -57,12 +57,12 @@ defmodule Ael.Secrets.API do
     |> Map.put(:inserted_at, now)
   end
 
-  defp put_secret_url(%Secret{action: action, expires_at: expires_at} = secret) do
+  defp put_secret_url(%Secret{action: action, expires_at: expires_at, content_type: content_type} = secret) do
     canonicalized_resource = get_canonicalized_resource(secret)
     expires_at = iso8601_to_unix(expires_at)
     signature =
       action
-      |> string_to_sign(expires_at, canonicalized_resource)
+      |> string_to_sign(expires_at, content_type, canonicalized_resource)
       |> base64_sign()
 
     secret
@@ -72,8 +72,8 @@ defmodule Ael.Secrets.API do
                             "&Signature=#{signature}")
   end
 
-  def string_to_sign(action, expires_at, canonicalized_resource) do
-    Enum.join([action, "", "", expires_at, canonicalized_resource], "\n")
+  def string_to_sign(action, expires_at, content_type, canonicalized_resource) do
+    Enum.join([action, "", content_type, expires_at, canonicalized_resource], "\n")
   end
 
   def base64_sign(plaintext) do
