@@ -58,6 +58,8 @@ script:
   - "CONTAINER_HTTP_HOST=localhost CONTAINER_HTTP_PORT=4000 mix test test/acceptance"
   # Submit Docker container to Docker Hub and create GitHub Release by pushing tag with changelog
   - ./bin/ci/push.sh || travis_terminate 1
-  # CD to Heroku
-  - ./bin/ci/deploy.sh || travis_terminate 1
+  # CD to Dev
   - sudo ./bin/deploy.sh || travis_terminate 1
+after_success:
+    # CD to Heroku
+  - ./bin/ci/deploy.sh 
