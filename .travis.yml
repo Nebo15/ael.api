@@ -17,7 +17,7 @@ notifications:
     on_success: always
 env:
   global:
-    - Chart:ael
+    - Chart=ael
     - MIX_ENV=test
     - DOCKER_HUB_ACCOUNT=edenlabllc
     - MAIN_BRANCHES="master develop staging" # Branches on which you want version to be incremented
