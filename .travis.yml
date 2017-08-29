@@ -10,8 +10,14 @@ elixir:
   - 1.4.2
 otp_release:
   - 19.3
+notifications:
+  slack: 
+    rooms:
+      - secure: "IK/yEPDepy0i0RC9/OAUWSq7F552zJf553hRzApjNk8RD7XT8ZPsAdsgXZ9oCWkuB+U7d1ZJ2adVUn75+fSIAn0IijFZK2tz8lhvBhileRgLKxshT/oUO4ihZmm+f4AKFw896qaVHqEIJF8QPwzaZh7qlCmmVoCc8luwQTzlsvTziOjJcbxZmn+IOEDUGmvQZem1Bh0O0Lr8nrXHD4C3dKFuWqRhlY6NmkixdPnY/4Tfs4qmZVdSQ8p1FeUcvP9dov+Fehj+wIUxAcGscxNQ3j3i1CrLyEKGijcaUwMKPx8Yz/OfjJU9oP5GUyUhD9zosHukg0SnMWWMtwjK+V++PSGwP79L1kwIVSOqc/57ZJEqRMGxHsBccCbsAUkX03rjlomS4g5dGd+Rzg99Gvz2CJ3hnfeqOkpGsDLbA6HUato5plM+uBDpofw5vcmThYMRDpxZ11XKNnz0Sx+dfavVwqInQGJJn/k4Ty3BT+nZ9S16BjJqU5l6LeofZEby6rhgGdEfB7/dppqnqD2YfQ9VMyJ48g5q6/yq8tTkB5lfibd7eG5PDbkeGP1HpLOnnDachsrw12bxyhIq0tCfMfRJdrXbXI7Vfnwz95URnDU8+n0EqiqYXXBACtASflW1GDpLps4hAN0UmgtvvU7U5ssl5pogS55cERONgJWc+m5Scrg="
+    on_success: always
 env:
   global:
+    - Chart:ael
     - MIX_ENV=test
     - DOCKER_HUB_ACCOUNT=edenlabllc
     - MAIN_BRANCHES="master develop staging" # Branches on which you want version to be incremented
@@ -28,7 +34,8 @@ branches:
   except:
     - /[0-9]*\.[0-9]*\.[0-9]*/
 before_install:
-  openssl aes-256-cbc -K $encrypted_ee0aec3588c4_key -iv $encrypted_ee0aec3588c4_iv -in priv/secret.enc -out priv/service_account_key.json -d
+  - openssl aes-256-cbc -K $encrypted_ace37a1e91cc_key -iv $encrypted_ace37a1e91cc_iv -in eHealth-eef414faa06b.json.enc -out eHealth-eef414faa06b.json -d
+  - openssl aes-256-cbc -K $encrypted_ee0aec3588c4_key -iv $encrypted_ee0aec3588c4_iv -in priv/secret.enc -out priv/service_account_key.json -d
 script:
   # Increment version in mix.exs
   - ./bin/ci/version-increment.sh
@@ -44,23 +51,13 @@ script:
   # Check code style
   - mix dogma
   # Build Docker container
-  - ./bin/build.sh
+  - ./bin/build.sh || travis_terminate 1
   # Run Docker container
-  - sudo ./bin/start.sh
-  - sleep 5
-  - docker ps
-  - RUNNING_CONTAINERS=`docker ps | wc -l`;
-    if [ "${RUNNING_CONTAINERS//[[:space:]]/}" == "1" ]; then
-      echo "[E] Container is not started\!";
-      docker logs ael_api --details --since 5h;
-      exit 1;
-    fi;
+  - sudo ./bin/start.sh || travis_terminate 1
   # Run acceptance tests on Docker container
   - "CONTAINER_HTTP_HOST=localhost CONTAINER_HTTP_PORT=4000 mix test test/acceptance"
-after_failure:
-  - docker logs ael_api --details --since 5h
-after_success:
   # Submit Docker container to Docker Hub and create GitHub Release by pushing tag with changelog
-  - ./bin/ci/push.sh
+  - ./bin/ci/push.sh || travis_terminate 1
   # CD to Heroku
-  - ./bin/ci/deploy.sh
+  - ./bin/ci/deploy.sh || travis_terminate 1
+  - sudo ./bin/deploy.sh || travis_terminate 1

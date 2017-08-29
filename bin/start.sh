@@ -33,4 +33,11 @@ docker run -p 4000:4000 \
        --add-host=$HOST_NAME:$HOST_IP \
        --name ${PROJECT_NAME} \
        "${PROJECT_NAME}:${PROJECT_VERSION}"
-
+sleep 5
+docker ps
+RUNNING_CONTAINERS=`docker ps | wc -l`;
+    if [ "${RUNNING_CONTAINERS//[[:space:]]/}" == "1" ]; then
+      echo "[E] Container is not started\!";
+      docker logs ops --details --since 5h;
+      exit 1;
+    fi;
