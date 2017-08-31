@@ -42,14 +42,7 @@ script:
   # Install dependencies if Travis won't do it by default
   # - mix deps.get
   # Run all tests except pending ones
-  - mix test --exclude pending --trace
-  # Submit code coverage report to Coveralls
-  # Add --pro if you using private repo.
-  - mix coveralls.travis --exclude pending
-  # Run static code analysis
-  - mix credo --strict
-  # Check code style
-  - mix dogma
+  - ./bin/mix_tests.sh || travis_terminate 1
   # Build Docker container
   - ./bin/build.sh || travis_terminate 1
   # Run Docker container
