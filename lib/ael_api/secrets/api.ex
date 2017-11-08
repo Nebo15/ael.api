@@ -8,6 +8,8 @@ defmodule Ael.Secrets.API do
   alias Ael.Secrets.Secret
   alias Ael.Secrets.Validator
 
+  import Ael.Utils, only: [get_from_registry: 1]
+
   @secret_attrs ~w(action bucket resource_id resource_name content_type)a
   @required_secret_attrs ~w(action bucket resource_id)a
   @validator_attrs ~w(url)a
@@ -48,7 +50,7 @@ defmodule Ael.Secrets.API do
     expires_at =
       now
       |> DateTime.to_unix()
-      |> Kernel.+(get_signed_url_ttl())
+      |> Kernel.+(get_from_registry(:secrets_ttl))
       |> DateTime.from_unix!()
       |> DateTime.to_iso8601()
 
@@ -67,7 +69,7 @@ defmodule Ael.Secrets.API do
 
     secret
     |> Map.put(:secret_url, "https://storage.googleapis.com#{canonicalized_resource}" <>
-                            "?GoogleAccessId=#{get_gcs_service_account_id()}" <>
+                            "?GoogleAccessId=#{get_from_registry(:gcs_service_account_id)}" <>
                             "&Expires=#{expires_at}" <>
                             "&Signature=#{signature}")
   end
@@ -97,7 +99,7 @@ defmodule Ael.Secrets.API do
 
   def base64_sign(plaintext) do
     plaintext
-    |> :public_key.sign(:sha256, get_gcs_service_account_key())
+    |> :public_key.sign(:sha256, get_from_registry(:gcs_service_account_key))
     |> Base.encode64()
     |> URI.encode_www_form()
   end
@@ -139,7 +141,7 @@ defmodule Ael.Secrets.API do
     |> cast(attrs, @secret_attrs)
     |> validate_required(@required_secret_attrs)
     |> validate_inclusion(:action, @verbs)
-    |> validate_inclusion(:bucket, get_allowed_buckets())
+    |> validate_inclusion(:bucket, get_from_registry(:known_buckets))
   end
 
   defp validation_changeset(%Validator{} = validator, attrs) do
@@ -147,27 +149,6 @@ defmodule Ael.Secrets.API do
     |> cast(attrs, @validator_attrs)
     |> validate_required(@required_validator_attrs)
     |> cast_embed(:rules, required: true, with: &Validator.rule_changeset/2)
-  end
-
-  defp get_gcs_service_account_id do
-    get_from_registry(:gcs_service_account_id)
-  end
-
-  defp get_gcs_service_account_key do
-    get_from_registry(:gcs_service_account_key)
-  end
-
-  defp get_signed_url_ttl do
-    get_from_registry(:secrets_ttl)
-  end
-
-  defp get_allowed_buckets do
-    get_from_registry(:known_buckets)
-  end
-
-  defp get_from_registry(key) do
-    [{_pid, val}] = Registry.lookup(Ael.Registry, key)
-    val
   end
 
   defp validate_rules(content, %Validator{rules: rules}) do

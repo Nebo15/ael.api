@@ -67,6 +67,7 @@ config :ael_api, :google_cloud_storage,
 config :ael_api, :swift_endpoint, {:system, "SWIFT_ENDPOINT", "set_swift_enpoint"}
 config :ael_api, :swift_tenant_id, {:system, "SWIFT_TENANT_ID", "set_swift_tenant_id"}
 config :ael_api, :swift_temp_url_key, {:system, "SWIFT_TEMP_URL_KEY", "set_swift_temp_url_key"}
+config :ael_api, :object_storage_backend, {:system, "OBJECT_STORAGE_BACKEND", "set_object_storage_backend"}
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment

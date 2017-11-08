@@ -3,11 +3,12 @@ defmodule Ael.Web.SecretController do
   use Ael.Web, :controller
   alias Ael.Secrets.API
   alias Ael.Secrets.Secret
+  alias Ael.Utils
 
   action_fallback Ael.Web.FallbackController
 
   def create(conn, %{"secret" => secret_params}) do
-    backend = get_backend(secret_params)
+    backend = Utils.get_from_registry(:object_storage_backend)
 
     with {:ok, %Secret{} = secret} <- API.create_secret(secret_params, backend) do
       conn
@@ -22,7 +23,4 @@ defmodule Ael.Web.SecretController do
       render(conn, "validator.json", is_valid: is_valid)
     end
   end
-
-  defp get_backend(%{"backend" => "swift"}), do: "swift"
-  defp get_backend(_), do: "gcs"
 end

@@ -23,6 +23,7 @@ env:
     - MAIN_BRANCHES="master develop staging" # Branches on which you want version to be incremented
     - RELEASE_BRANCH="master"
     - HEROKU_APP_NAME="edenlabllc-ael"
+    - OBJECT_STORAGE_BACKEND="gcs"
       # HEROKU
     - secure: "T/CbMk6DTZPNzRAlAEsOZplOyhmGKnP8X1OGBEzL39elPm8WKCJHadiAKx06SnABwxzbBAhhYtvEH8PCLZFE93d3S1c0kv2muyChHlGqc2TxlkDbztjkKPBYwMEgISY1YB6MQK8Kse7wWbHAjhj0CQVccl/eWu3jMal2wUV0ORshpwbhf/q4YogYDi6DOzwlQXkrcpJASkuFMxeiZwGsC5hXp0zJJrB0hBA4cpWtqehFlVrNVx/kHyDR8Gi9Fbbgf2QgA4mHdr94xtrULi40OeoLVL3exzNaR1SnbwYS/MIWHWI5Udtg+XZoWfsTZalHGlD4RcvQrbzf2XDTTo+4JQT0/rgHZubx+mlWaeqOevsex/akmz9ns2i1THOjIHeF+l+J0yG+PvqLZjEXRYwmSjiek6bkoAUZBBg7N2+k4R+xvfOT4BVkyzXz8NMk9HoAK5tbCH/LRR+ttZwhMppp0/UnqBeSS1t9FFQ730ggFaeeKRw89C3Ili4WJnbl/oN6Z1Ub5fCU6MyjmgaJKSHTGdugL8WjY6xX3vI2U4DiE0astxfPC1xA63+Xf4ytLYN4cLF81ZRziWYJCA9eTazrzR+/+dj8TL3w2d0pHGgA/+EuibayvirVGb41NVgBlQMyd+8oFIK8e+GpKsyaKbV02DCafRJVLQMgV5Blra7art8="
       # DOCKER
