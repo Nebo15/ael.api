@@ -7,7 +7,9 @@ defmodule Ael.Web.SecretController do
   action_fallback Ael.Web.FallbackController
 
   def create(conn, %{"secret" => secret_params}) do
-    with {:ok, %Secret{} = secret} <- API.create_secret(secret_params) do
+    backend = get_backend(secret_params)
+
+    with {:ok, %Secret{} = secret} <- API.create_secret(secret_params, backend) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", secret.secret_url)
@@ -20,4 +22,7 @@ defmodule Ael.Web.SecretController do
       render(conn, "validator.json", is_valid: is_valid)
     end
   end
+
+  defp get_backend(%{"backend" => "swift"}), do: "swift"
+  defp get_backend(_), do: "gcs"
 end

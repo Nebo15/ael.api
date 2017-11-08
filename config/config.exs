@@ -64,6 +64,10 @@ config :ael_api, Ael.API.Signature,
 config :ael_api, :google_cloud_storage,
   service_account_key_path: {:system, "SERVICE_ACCOUNT_KEY_PATH", "priv/service_account_key.json"}
 
+config :ael_api, :swift_endpoint, {:system, "SWIFT_ENDPOINT", "set_swift_enpoint"}
+config :ael_api, :swift_tenant_id, {:system, "SWIFT_TENANT_ID", "set_swift_tenant_id"}
+config :ael_api, :swift_temp_url_key, {:system, "SWIFT_TEMP_URL_KEY", "set_swift_temp_url_key"}
+
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
 # by uncommenting the line below and defining dev.exs, test.exs and such.

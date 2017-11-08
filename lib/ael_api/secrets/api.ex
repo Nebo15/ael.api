@@ -26,7 +26,7 @@ defmodule Ael.Secrets.API do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_secret(attrs \\ %{}) do
+  def create_secret(attrs \\ %{}, backend) do
     changeset = secret_changeset(%Secret{}, attrs)
 
     case changeset do
@@ -37,7 +37,7 @@ defmodule Ael.Secrets.API do
           changeset
           |> apply_changes()
           |> put_timestamps()
-          |> put_secret_url()
+          |> put_secret_url(backend)
 
         {:ok, secret}
     end
@@ -48,7 +48,7 @@ defmodule Ael.Secrets.API do
     expires_at =
       now
       |> DateTime.to_unix()
-      |> Kernel.+(get_gcs_signed_url_ttl())
+      |> Kernel.+(get_signed_url_ttl())
       |> DateTime.from_unix!()
       |> DateTime.to_iso8601()
 
@@ -57,12 +57,12 @@ defmodule Ael.Secrets.API do
     |> Map.put(:inserted_at, now)
   end
 
-  defp put_secret_url(%Secret{action: action, expires_at: expires_at, content_type: content_type} = secret) do
+  def put_secret_url(%Secret{action: action, expires_at: expires_at, content_type: content_type} = secret, "gcs") do
     canonicalized_resource = get_canonicalized_resource(secret)
     expires_at = iso8601_to_unix(expires_at)
     signature =
       action
-      |> string_to_sign(expires_at, content_type, canonicalized_resource)
+      |> string_to_sign(expires_at, content_type, canonicalized_resource, "gcs")
       |> base64_sign()
 
     secret
@@ -72,8 +72,27 @@ defmodule Ael.Secrets.API do
                             "&Signature=#{signature}")
   end
 
-  def string_to_sign(action, expires_at, content_type, canonicalized_resource) do
+  def put_secret_url(%Secret{action: action, expires_at: expires_at} = secret, "swift") do
+    canonicalized_resource = get_canonicalized_resource(secret)
+    expires_at = iso8601_to_unix(expires_at)
+    path = Enum.join(["/v1/", get_from_registry(:swift_tenant_id), canonicalized_resource])
+    signature =
+      action
+      |> string_to_sign(expires_at, path, "swift")
+      |> hmac_sign(get_from_registry(:swift_temp_url_key))
+      |> String.downcase
+
+    host = get_from_registry(:swift_endpoint)
+
+    Map.put(secret, :secret_url, "#{host}#{path}?temp_url_sig=#{signature}&temp_url_expires=#{expires_at}")
+  end
+
+  def string_to_sign(action, expires_at, content_type, canonicalized_resource, "gcs") do
     Enum.join([action, "", content_type, expires_at, canonicalized_resource], "\n")
+  end
+
+  def string_to_sign(action, expires_at, path, "swift") do
+    Enum.join([action, expires_at, path], "\n")
   end
 
   def base64_sign(plaintext) do
@@ -81,6 +100,12 @@ defmodule Ael.Secrets.API do
     |> :public_key.sign(:sha256, get_gcs_service_account_key())
     |> Base.encode64()
     |> URI.encode_www_form()
+  end
+
+  def hmac_sign(string, key) do
+    :sha
+    |> :crypto.hmac(key, string)
+    |> Base.encode16()
   end
 
   def iso8601_to_unix(datetime) do
@@ -114,7 +139,7 @@ defmodule Ael.Secrets.API do
     |> cast(attrs, @secret_attrs)
     |> validate_required(@required_secret_attrs)
     |> validate_inclusion(:action, @verbs)
-    |> validate_inclusion(:bucket, get_gcs_allowed_buckets())
+    |> validate_inclusion(:bucket, get_allowed_buckets())
   end
 
   defp validation_changeset(%Validator{} = validator, attrs) do
@@ -132,12 +157,12 @@ defmodule Ael.Secrets.API do
     get_from_registry(:gcs_service_account_key)
   end
 
-  defp get_gcs_signed_url_ttl do
-    get_from_registry(:gcs_service_secrets_ttl)
+  defp get_signed_url_ttl do
+    get_from_registry(:secrets_ttl)
   end
 
-  defp get_gcs_allowed_buckets do
-    get_from_registry(:gcs_service_known_buckets)
+  defp get_allowed_buckets do
+    get_from_registry(:known_buckets)
   end
 
   defp get_from_registry(key) do
