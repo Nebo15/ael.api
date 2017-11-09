@@ -10,7 +10,7 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
 			chmod 700 get_helm.sh
 			./get_helm.sh
 # Credentials to GCE
-			gcloud auth  activate-service-account  --key-file=$TRAVIS_BUILD_DIR/eHealth-eef414faa06b.json
+			gcloud auth  activate-service-account  --key-file=$TRAVIS_BUILD_DIR/eHealth-8110bd102a69.json
 			gcloud container clusters get-credentials dev --zone europe-west1-d --project ehealth-162117
 #get helm charts
 			git clone https://$GITHUB_TOKEN@github.com/edenlabllc/ehealth.charts.git

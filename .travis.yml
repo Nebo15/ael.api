@@ -41,7 +41,6 @@ branches:
   except:
     - /[0-9]*\.[0-9]*\.[0-9]*/
 before_install:
-  - openssl aes-256-cbc -K $encrypted_ace37a1e91cc_key -iv $encrypted_ace37a1e91cc_iv -in eHealth-eef414faa06b.json.enc -out eHealth-eef414faa06b.json -d
   - openssl aes-256-cbc -K $encrypted_ee0aec3588c4_key -iv $encrypted_ee0aec3588c4_iv -in priv/secret.enc -out priv/service_account_key.json -d
 script:
   # Increment version in mix.exs
@@ -59,6 +58,7 @@ script:
   # Submit Docker container to Docker Hub and create GitHub Release by pushing tag with changelog
   - ./bin/ci/push.sh || travis_terminate 1
   # CD to Dev
+  - openssl aes-256-cbc -K $encrypted_cbf93748d642_key -iv $encrypted_cbf93748d642_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
   - sudo ./bin/deploy.sh || travis_terminate 1
 after_success:
     # CD to Heroku
