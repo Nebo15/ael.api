@@ -47,7 +47,6 @@ defmodule Ael.Mixfile do
   defp deps do
     [{:distillery, "~> 1.2"},
      {:confex, "~> 3.2"},
-     {:logger_json, "~> 0.4.0"},
      {:poison, "~> 3.1"},
      {:cowboy, "~> 1.1"},
      {:httpoison, "~> 0.11.1"},
