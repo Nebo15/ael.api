@@ -16,9 +16,7 @@ defmodule Ael.Web.Router do
   pipeline :api do
     plug :accepts, ["json"]
     plug :put_secure_browser_headers
-
-    # You can allow JSONP requests by uncommenting this line:
-    # plug :allow_jsonp
+    plug EView
   end
 
   scope "/", Ael.Web do

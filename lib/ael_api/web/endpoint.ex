@@ -9,8 +9,6 @@ defmodule Ael.Web.Endpoint do
   plug EView.Plugs.Idempotency
   plug Plug.LoggerJSON, log: Logger.level
 
-  plug EView
-
   plug Plug.Parsers,
     parsers: [:json],
     pass: ["application/json"],

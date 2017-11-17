@@ -38,7 +38,7 @@ config :ael_api, Ael.Web.Endpoint,
   render_errors: [view: EView.Views.PhoenixError, accepts: ~w(json)]
 
 # Configures Elixir's Logger
-config :logger, :console, format: "$message\n"
+config :logger, :console, format: "$message\n", level: :info
 
 config :ael_api,
   known_buckets: {:system, :list, "KNOWN_BUCKETS", []},
