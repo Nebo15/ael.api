@@ -7,7 +7,7 @@ defmodule Ael.Web.Endpoint do
 
   plug Plug.RequestId
   plug EView.Plugs.Idempotency
-  plug Plug.Logger
+  plug Plug.JSONLogger, log: Logger.level
 
   plug EView
 
