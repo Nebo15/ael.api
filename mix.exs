@@ -52,7 +52,7 @@ defmodule Ael.Mixfile do
      {:httpoison, "~> 0.11.1"},
      {:phoenix, "~> 1.3.0-rc"},
      {:multiverse, "~> 0.4.3"},
-     {:eview, "~> 0.10.1"},
+     {:eview, "~> 0.12"},
      {:ecto, "~> 2.1"},
      {:plug_logger_json, "~> 0.5.0"},
      {:ecto_logger_json, "~> 0.1.0"},
