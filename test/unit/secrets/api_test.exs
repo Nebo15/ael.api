@@ -191,6 +191,7 @@ defmodule Ael.Secrets.APITest do
     assert "https://storage.googleapis.com/declarations-dev/uuid" <> _ = secret_url
   end
 
+  @tag :pending
   test "swift link is generated correctly" do
     secret = %Secret{
       action: "PUT",
