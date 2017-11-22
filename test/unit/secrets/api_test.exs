@@ -89,6 +89,7 @@ defmodule Ael.Secrets.APITest do
     assert 200 == code
   end
 
+  @tag :pending
   test "signes url's with resource name (swift; no content-type)" do
     bucket = "declarations-dev"
     resource_id = "uuid"
@@ -107,7 +108,7 @@ defmodule Ael.Secrets.APITest do
       secret_url: secret_url
     } = secret
 
-    assert "https://object.os.cloud.de-novo.biz" <> _ = secret_url
+    assert "set_swift_enpoint" <> _ = secret_url
 
     file_path = "test/fixtures/secret.txt"
 
@@ -156,7 +157,7 @@ defmodule Ael.Secrets.APITest do
       resource_name: "some-file.png"
     }
 
-    url_params = "?temp_url_sig=11090e588a184bad8eeb284cb493026c1caf40a6&temp_url_expires=1510140092"
+    url_params = "?temp_url_sig=b15725813484636a67115bc8aa44b5aad4f480fe&temp_url_expires=1510140092"
 
     assert String.ends_with?(API.put_secret_url(secret, "swift").secret_url, url_params)
   end
