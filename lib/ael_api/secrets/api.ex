@@ -100,7 +100,7 @@ defmodule Ael.Secrets.API do
     }
 
     {:ok, secret_url} =
-      ExAws.Auth.presigned_url(:put, url, :s3, now, config, ttl)
+      ExAws.Auth.presigned_url(String.to_atom(action), url, :s3, now, config, ttl)
 
     Map.put(secret, :secret_url, secret_url)
   end
