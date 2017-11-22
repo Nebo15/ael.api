@@ -7,6 +7,7 @@ defmodule Ael.Secrets.API do
   alias Ael.API.Signature
   alias Ael.Secrets.Secret
   alias Ael.Secrets.Validator
+  alias ExAws.Auth
 
   import Ael.Utils, only: [get_from_registry: 1]
 
@@ -100,7 +101,7 @@ defmodule Ael.Secrets.API do
     }
 
     {:ok, secret_url} =
-      ExAws.Auth.presigned_url(String.to_atom(action), url, :s3, now, config, ttl)
+      Auth.presigned_url(String.to_atom(action), url, :s3, now, config, ttl)
 
     Map.put(secret, :secret_url, secret_url)
   end
