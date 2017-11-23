@@ -7,6 +7,7 @@ defmodule Ael.Secrets.API do
   alias Ael.API.Signature
   alias Ael.Secrets.Secret
   alias Ael.Secrets.Validator
+  alias ExAws.Auth
 
   import Ael.Utils, only: [get_from_registry: 1]
 
@@ -87,6 +88,22 @@ defmodule Ael.Secrets.API do
     host = get_from_registry(:swift_endpoint)
 
     Map.put(secret, :secret_url, "#{host}#{path}?temp_url_sig=#{signature}&temp_url_expires=#{expires_at}")
+  end
+
+  def put_secret_url(%Secret{action: action} = secret, "s3") do
+    url = System.get_env("MINIO_ENDPOINT") <> get_canonicalized_resource(secret)
+    now = NaiveDateTime.to_erl(DateTime.utc_now())
+    ttl = get_from_registry(:secrets_ttl)
+    config = %{
+      access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
+      secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
+      region: System.get_env("AWS_REGION")
+    }
+
+    {:ok, secret_url} =
+      Auth.presigned_url(String.to_atom(action), url, :s3, now, config, ttl)
+
+    Map.put(secret, :secret_url, secret_url)
   end
 
   def string_to_sign(action, expires_at, content_type, canonicalized_resource, "gcs") do

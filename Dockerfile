@@ -1,4 +1,6 @@
-FROM nebo15/alpine-elixir:latest
+FROM edenlabllc/alpine-elixir
+
+RUN apk add --no-cache --update --virtual .build-deps musl=1.1.18-r2 make g++
 
 # Maintainers
 MAINTAINER Nebo#15 support@nebo15.com
