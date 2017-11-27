@@ -16,9 +16,6 @@ config :ael_api, Ael.Web.Endpoint,
   check_origin: false,
   watchers: []
 
-# Do not include metadata nor timestamps in development logs
-config :logger, :console, format: "[$level] $message\n"
-
 config :ael_api,
   known_buckets: {:system, :list, "KNOWN_BUCKETS", ["declarations-dev", "legal-entities-dev"]},
   secrets_ttl: {:system, :integer, "SECRETS_TTL", 3 * 600} # seconds
