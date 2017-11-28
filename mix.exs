@@ -57,7 +57,6 @@ defmodule Ael.Mixfile do
      {:ecto_logger_json, "~> 0.1.0"},
      {:phoenix_ecto, "~> 3.2"},
      {:ex_aws, "~> 2.0"},
-     {:ex_doc, ">= 0.15.0", only: [:dev, :test]},
      {:excoveralls, ">= 0.5.0", only: [:dev, :test]},
      {:dogma, ">= 0.1.12", only: [:dev, :test]},
      {:credo, ">= 0.5.1", only: [:dev, :test]}]
