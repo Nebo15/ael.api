@@ -8,7 +8,7 @@ defmodule Ael.Mixfile do
      description: "Media content storage access control system that work on top of Signed URL's.",
      package: package(),
      version: @version,
-     elixir: "~> 1.4",
+     elixir: "~> 1.5",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
