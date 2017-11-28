@@ -45,7 +45,7 @@ defmodule Ael.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:distillery, "~> 1.2"},
+    [{:distillery, "~> 1.4.0"},
      {:confex, "~> 3.2"},
      {:poison, "~> 3.1"},
      {:cowboy, "~> 1.1"},
