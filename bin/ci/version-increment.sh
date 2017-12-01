@@ -17,7 +17,7 @@ PROJECT_VERSION=$(sed -n 's/.*@version "\([^"]*\)".*/\1/pg' "${PROJECT_DIR}/mix.
 # Increment patch version
 # Source: https://github.com/fmahnke/shell-semver/blob/master/increment_version.sh
 a=( ${PROJECT_VERSION//./ } )
-((a[2]++))
+((a[1]++))
 NEW_PROJECT_VERSION="${a[0]}.${a[1]}.${a[2]}"
 
 echo "[I] Incrementing project version from '${PROJECT_VERSION}' to '${NEW_PROJECT_VERSION}' in 'mix.exs'."

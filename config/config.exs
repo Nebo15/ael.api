@@ -39,21 +39,30 @@ config :ael_api, Ael.Web.Endpoint,
 
 # Configures Elixir's Logger
 config :logger, :console,
-  format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
-
-# Configure JSON Logger back-end
-config :logger_json, :backend,
-  on_init: {Ael, :load_from_system_env, []},
-  json_encoder: Poison,
-  metadata: :all
+  format: "$message\n",
+  handle_otp_reports: true,
+  level: :info
 
 config :ael_api,
   known_buckets: {:system, :list, "KNOWN_BUCKETS", []},
   secrets_ttl: {:system, :integer, "SECRETS_TTL", 600} # seconds
 
+# Configures Digital Signature API
+config :ael_api, Ael.API.Signature,
+  endpoint: {:system, "DIGITAL_SIGNATURE_ENDPOINT", "http://35.187.186.145"},
+  timeouts: [
+    connect_timeout: {:system, :integer, "DIGITAL_SIGNATURE_REQUEST_TIMEOUT", 30_000},
+    recv_timeout: {:system, :integer, "DIGITAL_SIGNATURE_REQUEST_TIMEOUT", 30_000},
+    timeout: {:system, :integer, "DIGITAL_SIGNATURE_REQUEST_TIMEOUT", 30_000}
+  ]
+
 config :ael_api, :google_cloud_storage,
   service_account_key_path: {:system, "SERVICE_ACCOUNT_KEY_PATH", "priv/service_account_key.json"}
+
+config :ael_api, :swift_endpoint, {:system, "SWIFT_ENDPOINT", "set_swift_enpoint"}
+config :ael_api, :swift_tenant_id, {:system, "SWIFT_TENANT_ID", "set_swift_tenant_id"}
+config :ael_api, :swift_temp_url_key, {:system, "SWIFT_TEMP_URL_KEY", "set_swift_temp_url_key"}
+config :ael_api, :object_storage_backend, {:system, "OBJECT_STORAGE_BACKEND", "set_object_storage_backend"}
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment

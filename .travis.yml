@@ -7,57 +7,69 @@ cache:
 services:
   - docker
 elixir:
-  - 1.4.2
+  - 1.5.2
 otp_release:
-  - 19.3
+  - 20.1
+addons:
+  apt:
+    packages:
+      - docker-ce
+notifications:
+  slack: 
+    rooms:
+      - secure: "IK/yEPDepy0i0RC9/OAUWSq7F552zJf553hRzApjNk8RD7XT8ZPsAdsgXZ9oCWkuB+U7d1ZJ2adVUn75+fSIAn0IijFZK2tz8lhvBhileRgLKxshT/oUO4ihZmm+f4AKFw896qaVHqEIJF8QPwzaZh7qlCmmVoCc8luwQTzlsvTziOjJcbxZmn+IOEDUGmvQZem1Bh0O0Lr8nrXHD4C3dKFuWqRhlY6NmkixdPnY/4Tfs4qmZVdSQ8p1FeUcvP9dov+Fehj+wIUxAcGscxNQ3j3i1CrLyEKGijcaUwMKPx8Yz/OfjJU9oP5GUyUhD9zosHukg0SnMWWMtwjK+V++PSGwP79L1kwIVSOqc/57ZJEqRMGxHsBccCbsAUkX03rjlomS4g5dGd+Rzg99Gvz2CJ3hnfeqOkpGsDLbA6HUato5plM+uBDpofw5vcmThYMRDpxZ11XKNnz0Sx+dfavVwqInQGJJn/k4Ty3BT+nZ9S16BjJqU5l6LeofZEby6rhgGdEfB7/dppqnqD2YfQ9VMyJ48g5q6/yq8tTkB5lfibd7eG5PDbkeGP1HpLOnnDachsrw12bxyhIq0tCfMfRJdrXbXI7Vfnwz95URnDU8+n0EqiqYXXBACtASflW1GDpLps4hAN0UmgtvvU7U5ssl5pogS55cERONgJWc+m5Scrg="
+    on_success: always
 env:
   global:
+    - Chart=ael
     - MIX_ENV=test
-    - DOCKER_HUB_ACCOUNT=nebo15
+    - DOCKER_HUB_ACCOUNT=edenlabllc
     - MAIN_BRANCHES="master develop staging" # Branches on which you want version to be incremented
     - RELEASE_BRANCH="master"
-    - HEROKU_APP_NAME="ael"
-    - secure: "h+fujfg/kMojVJjuKBWUZ9NWVDN9+XKYabHVJinB/olsgU+324PHJtdI85xLolmkelHilKCNJUoZqjbrz+m3UOs6+7YuujLZg9IVvqP4Kjo/y1G96MXhCJbT1JGo7pDv2Trp8COHmarfDxKAlL3K1qa9BUhdgByzho56/XZx0JCXit3b2Sg+/9SoGS9UVTV6NZ5k6YcrrCGBlEulzvIff4KC6N1I6zQVmR8h/C1MyeGv7GEwXJpLMfrc7dyVUIAFK4lATxuOpPBi+00HHAKxwlXW1YSftAOIVVAuhD6dghXSBjEYtjzSXcrpeNzb36wdcBMRONxx2+q0KafOyUaMV8oxrBF9mCqNfOP3HKc8r+BsNLcPWUv5087hD8hVvp15YtRRHWEWnDlx1dLeu5UIKG1mjBohdi2h9r6xcltFWBabs5ovESydueTHdpn8M/bT1fCzS4uMrADekFmpt8NWzAa733iTU2eir3I3mHfsyk0jE/kYDOVJ8fcZmY4d+Tq/W/GLlGJEVUZp4mLj+dzKJ9LPxP4HGGZ4D0DOxxUwlmiNAozI2D2lGEJZPoWkILrqW2B8/y70F5+v3JmvGHMhHJi0XZ8Pjyt0GUGu2ccz8higXVjv+0tRfCFFqMoX/1ToeIEuPUmrmRzqZvikVjtgzta8n1rMyFEZJ05eG+J2sjk="
-    - secure: "RuDDqaIWdShDYY3LMorGEQNiLXqrzErlQNTd0XPuajczKzYvl6lq4k93Ohu0t81/NQK06zD8xz25pmS4ogBA1HiMbDS95D/liUnE7AunKyjKG04tEuOdXMTm4Q/2QKHbugZp7iE/0RR+0jdJXrvzWwk2Dq9Yt293L+CsHgldEdil0nr/bAjGnWy3xT2IIq/nuZmJarTZnzfROrXMrB+5CaHm5Iw3klvSsnekAPRamZ9F+Q8Ko4NWcm9dOpCPlZUEvR+Ekegt2LukLLUA7N/KULhAp6KLS8PrZiwM8Wc+x8WqeZgUmzij2gdoV/kvghVlJFMg5Xy4o2kXEF66wQL/eJffpP4Spgg0ZZjPLr4PFgE4pxps2IwnTSApFzMOxFY9lb0JWXm0BgPjXXXWJBl/IZaHK0URoSeARazly97LpQtmHecqMn9CAhs8Yhty/yfRSr1sspT7DS7uwbbPMmudtLb9Zqk2E2fm1WQQO7rNrLdZLZjlk8pWsk48Dm0OWc3O6qGstvnJayeYAiZ4vK2JQnhodjSA1v9XlLhjwSSE0Iv4eEteB12JmY3tlM0SwdTM7BOBvQs1woj7vzmtuWbCq4WWTAEPNBlRroG+eUHBW2rQQJIPSkHBK8L4rq8meivxvA9tyA57ZxJqbCf0a7vmleUCNedlTPuuhu7QcJdCmjg="
-    - secure: "A28VAicvlcqprk446xKHlTU73H/qUoxfWml6efHoxQx4/aKsNNDk3ty+1NgNEmgvMmhb1JCYgBq7psPx/JaYr3quTAmB3vv94X3sSUFThDp01CK46paMNybdqhPD9uRSrl7QfTSgCyMGSFFVDK+Ld6kKY9RH/68h8BTnrbg3wU5o5Oa3rrJrIjRp2+VKV0FSWNi2P6haF9oBaHtmBn5nH9Ss+FZsXTSv7hYz6SZ2b5ao9LGD6XQ2QKBq7rJHy/O2+cz6ccswvR716kWOLTCFCKFMCVk57ltbYE+bfeXQYGidUWv3Fpfq83sf+NXy5Kfva9SyblktAuRh695WonBQ0HlYHwJ0pP42ITIugqJWHyuAlqsHKWxBprxD4Tueh0FZ18eDkwtjRpjgIBnkUuuwlaCdHPlvgpM4JwEleTlE6nkz+LrxdDJXFNgyaZ3dc8S5wK7T3XxEJXJeWEwcDjDpmk/pQ9fOYYTpIU8XoeBLS6/Q4wsO9q/QqvpCGgUJ0KdgxnFTPH+Dx4tMwBqrBs5n84ec5lh6Mk5g9U0XOpi6zDbZn9pn+G626kiBnc3Dw3NEWoOhiNO7BaCeImnbHK4pcfV9P8GyDB4dcS9FyzPLQQ+62ntC/oVymAA5sLM+J2PU/K6EKKpSdwrQY4Xj1rfvP6rCrIly/vH4McoBQkz8eiA="
+    - HEROKU_APP_NAME="edenlabllc-ael"
+    - OBJECT_STORAGE_BACKEND="gcs"
+    - AWS_REGION=us-east-1
+      # HEROKU
+    - secure: "T/CbMk6DTZPNzRAlAEsOZplOyhmGKnP8X1OGBEzL39elPm8WKCJHadiAKx06SnABwxzbBAhhYtvEH8PCLZFE93d3S1c0kv2muyChHlGqc2TxlkDbztjkKPBYwMEgISY1YB6MQK8Kse7wWbHAjhj0CQVccl/eWu3jMal2wUV0ORshpwbhf/q4YogYDi6DOzwlQXkrcpJASkuFMxeiZwGsC5hXp0zJJrB0hBA4cpWtqehFlVrNVx/kHyDR8Gi9Fbbgf2QgA4mHdr94xtrULi40OeoLVL3exzNaR1SnbwYS/MIWHWI5Udtg+XZoWfsTZalHGlD4RcvQrbzf2XDTTo+4JQT0/rgHZubx+mlWaeqOevsex/akmz9ns2i1THOjIHeF+l+J0yG+PvqLZjEXRYwmSjiek6bkoAUZBBg7N2+k4R+xvfOT4BVkyzXz8NMk9HoAK5tbCH/LRR+ttZwhMppp0/UnqBeSS1t9FFQ730ggFaeeKRw89C3Ili4WJnbl/oN6Z1Ub5fCU6MyjmgaJKSHTGdugL8WjY6xX3vI2U4DiE0astxfPC1xA63+Xf4ytLYN4cLF81ZRziWYJCA9eTazrzR+/+dj8TL3w2d0pHGgA/+EuibayvirVGb41NVgBlQMyd+8oFIK8e+GpKsyaKbV02DCafRJVLQMgV5Blra7art8="
+      # DOCKER
+    - secure: "m5kINtUT49oLBdrKjJQOIeDEO6K3RBvN4cDNpBb6/9pKNPw8SWUcnfub+mHEKnC997uY7ZGN45cpOfQhwWe5waF1j6j46rHcwaysLPknSipsW5WbJnrFTHQd/SOO6csRBba4bQpcMLSZ6eQulEHZ5OYPB/glTeIx9Q6DztzgJeHHtQcGsok5C8NuyKmg8K/K3xWx8chqZYOIvSKHZUZDFbRAHxl1TPMMqCfTZxeoQahgHlohYQBINrRW+hf0Uh7vGv651PMxdVKZTPBhoOUOKTXoXfNintk1XW7ayN8WAhtBtkh1R1K4dAofOLHFyspbB1KBJIgXjJEqoKd+VQuMEJUysdP3N62khR3A8m+SGab8PKuuRaDIWrYwR5o8nTxMabQA9PoTidDXP3XJDX5kNCXhdL9itzVWtHP6sF3hk2SlN/gQDdAs8jKVFrAw37s1NnGSb5xqTi+8XhzdNiBv8FDK7J4ltz2o0jfy22iW2HyCBDDqffBg2Wz3hn9rvhU7YWg4ztXLqZ/a7tO0XpXyFh+DSHLsiP5Cr1rBPaaNRqO8x9mCjqUlWQ20lZUphJ39+rPw2COhet7LWkGzf9wVtvkJYBdMfhWpz232xjWiZSM53XWG0UfikmAUrzbCpQjWTrL3vXc0LpoXHAI6vACucQXC4Nt3hgVcpNlM1RwWeFI="
+      # GITHUB
+    - secure: "c9T4gKC65WulbO7WkJs1TBtMmYbUrUDDjvg4AIDg2XpfelNWQcT6ege5/4yTkF5ccOSC1hXtMz2+d5wnQ6Er53cvL+2KMhVi7qeGx2sJHw93T880Bm83YDz9LnSSLRQIdGw9copXqNoW7MPO5KjNrprBldTHOK9UwIBW6dtFj3l5/5TATu/7F8xN4SfVCHlAQnHdtWCpJpQ2Rbkio+s+XPaVe+dB+MMRUiQSxFUItR20XrsSkKbm4pwn3PQpbtRBDrLc1LAvjJVEjFbD0PUXJkDXUuGoJMEvtz/NP2wccfYFL2vxKtAKBxwNaH3VZxVWzoOJi5n9QhRu+4QbupMk0ALtL1Hf2jy8zzP5ebfJ+/gVxSzEnv36as63YQFdc0u4Plh5yRnkcpqYPXhu2W3eoge1uZCY+QzJJGid7DDD5RgUUazNcriwT997L92oC04XUPKLvOwEF+kKN+9R8tpzgUgJ9B4xydd0iOqNlompWxnWnmu6lfICRgE7QSFwfXE81heLOP6m1thHKetlrc3lW6PovaS61eKghPm5j/YBCPz0YbBw5DXSSscraN0ojT4fZycNMmgrui9akPToOKasFFPDK8zSV+6VaocGp4VQwUuLXWHYaLo3Gvi5L5gbXNoBCMTkb6eKjwTi7f92Tvo41Q6K/Jufqh6AoRF+M5Nr9DI="
+      # SWIFT ENDPOINT
+    - secure: "Dqi8uOzj3bGGMPbF4bNInPkSgw+VtmWlQwACguRx+c0uJTdRy7ZfdPilzy/nVQjRh7Mymd9wkHy4lHndKQpm25p51lfUSNIeQQBS89lfXzNK56KoV4NX/Ty31QDNVvpodfU4TiwK4NZC3EK/dNN8p9AVrrLAZk3H8hp18lXBLCF0JQDvdD9IwH0n8CH6gk4f0YHt5cDAO9zDNlIN4DdfVXlsoKM2V4B2+YIZZoD7+jNz0u43+td4Ul0vqbCWmKID81z3lycdlOpo5s/7WUgYIoS/skqMs1aO7YTZPGlvAaXV7kLgy1FII2dszZRhpNPH9dGTK+ro4jU1+ppYPiRG0BHhUoMkf0F7rF4rBQ8R5qF9sL/TwuweeGNgqqGOurHXQxBFhqGmsAvbCCQbw3FiKPMS+ddMo7gpWYXdTajM8EbYS46j8LdKCDIZwD6FqcpXzaKT4sKpf7fqdc0RNNnkvm+OOgKiHMB/5lR7+XKGPHyurRnDXJ0/1xYjctRMCgLa5w7LAQWt0RIM6rbHUk/PFKtR7l40xqM/228kSb4Gqte6N0mSn3HRqLT/8C8Cze81gJkQVNm+Qkfzxrlox/aCG4vANXWfYTbZNxz2i9j8Y9Bgj1RyIMJKhyoNCmTLmaxdAnXo00Ji+6JkZpMvoJz4s6B0w4KVM1QF1qqHUsZqdL0="
+      # SWIFT TENANT ID
+    - secure: "WwG0lULvOyF0GVm818de8AYivJW2Qnf2/JhXFQHZaFf5ebGp2m+2ZhR+WdmFJu1ssKlZxQLxpuP4KQzWhVipk/VaGw3oYSQ3X68+y22cohEBAOQQ5ik8bhgI4IdnagDRcUgJIt86poXlo9264AaT14QijAq5wLapkw5KNZFFfCh50VhnmOW356Bvvr+uwysGZ24rllHxxuL6Y+3gpJOXzuBGTuoyCY55xpYfmEWhRcAUcm5v3FR69fvK7H1o7fopQM5txueHUmAEfVYpurO6004p/ZtoJ3ff+Ka5jovpI1/gyT8hJyLXKhyJd/lYWaO3x2M//sI7ZmutyIW+J7lRlkBrlx/URnLEQz6x34TJj2nyGqct7XPbcSEoSxAtNAePlgMYrowHv9XjJ50E8ETO4C+o9hiLmHZ296467QsKyirRRVxjyb9x4eSEzEMhCjjm+UiUW3eAGWQBmAz2yzKcU06Uel6bA5o79+B+t+rFPFudme2EhWkQjV/QPjYckATs1nuHrCfSYq70Vdr0jlfxiwzK1fyXDeqbZQCICvcPT6lDnSoNmx2029GiwkxmfVNc3xu1nab8ZlhlJ1ARA15MNZ5vACEJCn6j8AvP+Kf1qSHQikeSTgeNpyc32+DP2vd+tVDklSL+5vOMc1oIOzrbC+LNoYkfmM6fVqiJFLDqnGg="
+      # SWIFT SWIFT TEMP URL KEY
+    - secure: "QPc+ZD9YLrmT76MGPheVSMFv1WGmDNHcseYYMTixpahaUfVrTcLA1DqRyksnDPvXtb7IXdRAyk3QTTr6oyG8OYVJTJaj7kAONfXZAn9KJ/9K2QnqUGnMKV0VfIAOcQ7/0rAVYLvXvGCZ5vDXcniXAqRSiloaNapG56rjLbMQh7bfmqAf3c5JyXkWfVCIUtAsisgccfd2UdJC0X09N4xY9+OhoZx0TaBbAgvVO7WwI4xEvK5lj4pil4Z+y3z/OV2KejANBkLuVJupYQQ+x7b8/uZ4iVytHZxZa/HxzitnhnZ2ncu0oVQff9wxDOYgnw3P9Ji8Fdej9g1BK6DSvsHqvipV0SnjkLKf9JLLr6izlG9fCde/UNG2l0mA9R3AEE88AJ+wXSJD6h2MWhm6FOPRJOBJHDLemS8RPEJEvZ+qj0KrdFiozodTjRlbYde2qIlWQkf8JQdb1YB6g3ZY81PEphwUER/T01sEALUo8BKuUAaapar5DBIoFjpUgqERLNKB7gdG3Jol1XhYyy0OePlhIdYkKwUFOop/Gff1HnmZgA3DA4MXjqX1sqQMeRiRkLkP9i0Z0Atl4pBu92ZiExQJxmp5S2uDQg/BObhOI2ztu8Y4PDU59lsMBVizgDjW8TMAyOjvB5t0p2kObQymat3CAVILlSO3mSvzQITi/cckFe8="
+      # AWS_ACCESS_KEY_ID (DEV CLUSTER)
+    - secure: "aI9zvKwxm+FtqYWnia4hYRfz/O+v2n4C1gWEFLOJ+/Atc9cePG+0yZkPA5zRaMEC878eJX81durt8obDsLp44K74ekWlDaoH8ANvh8LMn/JPNRJ1EhIT1T1HHmH2bkT+QkUA0wBexYP6ADgRA0fBpBj+YOkgGG8ZH8s8mp3nz9e+N8VIFVLsBMSlNmrikpY+2Z9XVrw5W27UFlkbz16+f5vAO+iQKHQ+XdomLAJyZwTzMFq7LSKMuB7tczTMazNQ3FGcXiBocXnFfRr+tjnF4ZSBfUtzUprJlJ7Z/gGKqIWhR8CKPTNjnC191oxb1BVSMWTTfmS1SC0PdJ4cphN/5LZG4Tb3slsmljynuX/eNmQHTTfn12qHJARUtOy8tTpiUX84CZAER5QSJncGRq+YKCYrx0GchIoW1+JptXBeaHsKXOpZtqVQROx9RaTqob44wOHoRcKtEP089267dVKXwlpjdaDRecWO8v6DFKzGc+I8VWbpLCe7uaRqFlD91n72MKThMrvETpp3JS44yn/uDJ+Qy4tSUtCuPFnQtzLDbbn1UqlkOutvLNUJFrNyQGXSFfNJaYw8JFsafydAKax1qgg6GAcW05QqrDJ0epnhFc7RtuUXAN8XFSM7vVeXm5/BQnfOVDm4P2tIz9tgd5EoGPWRxHUgeAPeivDGDzEnBrE="
+      # AWS_SECRET_ACCESS_KEY (DEV CLUSTER)
+    - secure: "GyAB3UOuOHUiOzC25itMqclAm+xOLUwEpDJ8A8mwbkv8cPjJMBzUppcXrtKjuIbcHl3an9uaELm9/2QZ6cskd0N+jmVTUeSsoNO5z6Cl0uDBppqSy6ZuPxqpdjRUQrJvTZnaO8bgqlyXBZG0M71D4HcQERH0/9v2+v9wtxkIbJRI50YCRtVyVCR1lj91N4+2z+VoRzFWUBYN4JzPy5fGzAT/7JQfua8nZ11GCDprHLGRs2PuV8UsUXLMpVZgJVLwKJC8PF/FP5XJjBFkr1QtujOs96LVauXPXsNmwJk26YzA1SlPgLHMfPqWjFZUHdKiIdn4JjtH5VZXhbYX/wM4W94/jCPTYlQOJrSGbhaGTDFmKEOfQg5Ec7Rnf/RxRmV0oJLp0qCv2wzZCL3Ort2VbJP8b+3RWL6gCw2rj+VbX6mt3Er4gV0oqQuDYi0Zz0S06r/e7b0mBqPBVPZNBzatl9pya9eHthkuaZXYQxh3nBma52ZnnbvEywG0j3JIeBR3HmkWNmUKsaqTNmAuy2ny9zc5UZIHtUL9/hO6YMYYK0vrnd8++HXjhLsEqJGHNNaq62e5JCUa6rkUNR9MDJ4UFp0ALO6n+v0IS7Y2eUnkBEXromnjeBz6szz8Ly+tpoNuc0YdVI4/OkeNysfy+MOIMjhbo5qA22H6wp+rOuMXXzY="
+      # MINIO_ENDPOINT (DEV CLUSTER)
+    - secure: "qL2iJc/kSWaij54Jqe1aqAxDMy+HFph7Ve0cWwU4gD7v4VYTysOfTicDBBUBG1J0FyseGACkP9eUGPGVtM4MQVy8WCX/zEBMSzEg3wZ0bkLiN5c/Ufb+PXLi/DrP97OZEmX47WD4qXx0bGpYL1Cc0/NYcNgCR0F0XcYojGyry4tHGsgELG+l+mmkSHdyuYl5uwU2RjEWjsFqnLODdLqaW1xSlgLldsZkuUBv3ayyfmYA9Erz4vDH2bszdRFbe2X7HXfXOzgfWu97SkpVASR3JK1AEcsDZB11Bu8u0OSzliZ+WuENVIJ6GwOT4QgD17x4hQ+4SxdAytKEIrnJmKnkN94T3WxnRucBjMqUiLxYj0FzM0RU0Xj9kwSIq0nUOkSg6luSEcgkykAP4VoV02GBxYNA3upRoxhZMQ49KYeGvphMk4sVfqzgBd8UaVEp1DX1CSavAwudqt8Fxx59wovBwmw3Fkj8g3o32hXfNyfPbuXo4+HOLCpHMcACa8kccIUpvkx82SaE107kjbMMw9CtJc0S/ntCiPlcynLGbutxfKsaZ303ObZ9H1UGUx74ljgLly2V8isRnnN1wQD6vDPLXf1+5RNDjPBHfRK6M4SABL4IgKLyYACcO+BiaKLfmbad+Dom5iNuyj8fYuaTpx7XuU8oWmi+JFOGH6V5dteXekQ="
 branches:
   # Releases are generated automatically, stop infinite build loop
   except:
     - /[0-9]*\.[0-9]*\.[0-9]*/
 before_install:
-  openssl aes-256-cbc -K $encrypted_2fbea6458a09_key -iv $encrypted_2fbea6458a09_iv -in priv/secret.enc -out priv/service_account_key.json -d
+  - openssl aes-256-cbc -K $encrypted_ee0aec3588c4_key -iv $encrypted_ee0aec3588c4_iv -in priv/secret.enc -out priv/service_account_key.json -d
 script:
+  # Check for versioning error
+  - ./bin/ci/release/check-version-error.sh || travis_terminate 1
   # Increment version in mix.exs
-  - ./bin/ci/version-increment.sh
-  # Install dependencies if Travis won't do it by default
-  # - mix deps.get
+  - ./bin/ci/release/put-source-version.sh || travis_terminate 1
+  # Create release notes log for minor version
+  - ./bin/ci/release/put-release-notes.sh
   # Run all tests except pending ones
-  - mix test --exclude pending --trace
-  # Submit code coverage report to Coveralls
-  # Add --pro if you using private repo.
-  - mix coveralls.travis --exclude pending
-  # Run static code analysis
-  - mix credo --strict
-  # Check code style
-  - mix dogma
+  - ./bin/mix_tests.sh || travis_terminate 1
   # Build Docker container
-  - ./bin/build.sh
+  - ./bin/ci/release/build-container.sh || travis_terminate 1
+  # Initialize DB for Docker container
+  - MIX_ENV=dev mix ecto.setup
   # Run Docker container
-  - sudo ./bin/start.sh
-  - sleep 5
-  - docker ps
-  - RUNNING_CONTAINERS=`docker ps | wc -l`;
-    if [ "${RUNNING_CONTAINERS//[[:space:]]/}" == "1" ]; then
-      echo "[E] Container is not started\!";
-      docker logs ael_api --details --since 5h;
-      exit 1;
-    fi;
-  # Run acceptance tests on Docker container
-  - "CONTAINER_HTTP_HOST=localhost CONTAINER_HTTP_PORT=4000 mix test test/acceptance"
-after_failure:
-  - docker logs ael_api --details --since 5h
-after_success:
+  - sudo ./bin/ci/release/start-container.sh
+  - sudo ./bin/ci/release/check-container.sh || travis_terminate
   # Submit Docker container to Docker Hub and create GitHub Release by pushing tag with changelog
-  - ./bin/ci/push.sh
-  # CD to Heroku
-  - ./bin/ci/deploy.sh
+  - ./bin/ci/release/push-changes.sh || travis_terminate 1
+  - openssl aes-256-cbc -K $encrypted_cbf93748d642_key -iv $encrypted_cbf93748d642_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
+  - sudo ./bin/deploy.sh || travis_terminate 1

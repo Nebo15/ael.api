@@ -16,12 +16,9 @@ config :ael_api, Ael.Web.Endpoint,
   check_origin: false,
   watchers: []
 
-# Do not include metadata nor timestamps in development logs
-config :logger, :console, format: "[$level] $message\n"
-
 config :ael_api,
   known_buckets: {:system, :list, "KNOWN_BUCKETS", ["declarations-dev", "legal-entities-dev"]},
-  secrets_ttl: {:system, :integer, "SECRETS_TTL", 600} # seconds
+  secrets_ttl: {:system, :integer, "SECRETS_TTL", 3 * 600} # seconds
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.

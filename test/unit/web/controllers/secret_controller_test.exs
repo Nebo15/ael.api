@@ -43,4 +43,24 @@ defmodule Ael.Web.SecretControllerTest do
     conn = post conn, secret_path(conn, :create), secret: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
   end
+
+  test "validate entity success", %{conn: conn} do
+    conn = post conn, secret_path(conn, :validate), %{
+      "url" => "http://localhost:4040/declaration_signed_content",
+      "rules" => [
+        %{"field" => ["legal_entity", "edrpou"], "type" => "eq", "value" => "12345678"},
+      ]
+    }
+    assert %{"is_valid" => true} = json_response(conn, 200)["data"]
+  end
+
+  test "validate entity fail", %{conn: conn} do
+    conn = post conn, secret_path(conn, :validate), %{
+      "url" => "http://localhost:4040/declaration_signed_content_not_valid",
+      "rules" => [
+        %{"field" => ["legal_entity", "edrpou"], "type" => "eq", "value" => "12345678"},
+      ]
+    }
+    assert %{"is_valid" => false} = json_response(conn, 200)["data"]
+  end
 end

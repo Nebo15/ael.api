@@ -3,12 +3,11 @@ defmodule Ael.Web.Endpoint do
   Phoenix Endpoint for ael_api application.
   """
   use Phoenix.Endpoint, otp_app: :ael_api
+  alias Confex.Resolver
 
   plug Plug.RequestId
   plug EView.Plugs.Idempotency
-  plug Plug.Logger
-
-  plug EView
+  plug Plug.LoggerJSON, log: Logger.level
 
   plug Plug.Parsers,
     parsers: [:json],
@@ -28,7 +27,7 @@ defmodule Ael.Web.Endpoint do
   and must return the updated configuration.
   """
   def load_from_system_env(config) do
-    config = Confex.process_env(config)
+    config = Resolver.resolve!(config)
 
     unless config[:secret_key_base] do
       raise "Set SECRET_KEY environment variable!"

@@ -4,14 +4,12 @@ defmodule Ael do
   """
   use Application
   alias Ael.Web.Endpoint
+  alias Confex.Resolver
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
-
-    # Configure Logger severity at runtime
-    configure_log_level()
 
     # Define workers and child supervisors to be supervised
     children = [
@@ -55,34 +53,25 @@ defmodule Ael do
 
     Registry.register(Ael.Registry, :gcs_service_account_id, Map.get(gcs_service_account, "client_email"))
     Registry.register(Ael.Registry, :gcs_service_account_key, :public_key.der_decode(:'RSAPrivateKey', der))
-    Registry.register(Ael.Registry, :gcs_service_secrets_ttl, Confex.get(:ael_api, :secrets_ttl))
-    Registry.register(Ael.Registry, :gcs_service_known_buckets, Confex.get(:ael_api, :known_buckets))
+    Registry.register(Ael.Registry, :secrets_ttl, Confex.get_env(:ael_api, :secrets_ttl))
+    Registry.register(Ael.Registry, :known_buckets, Confex.get_env(:ael_api, :known_buckets))
+    Registry.register(Ael.Registry, :object_storage_backend, Confex.get_env(:ael_api, :object_storage_backend))
+    Registry.register(Ael.Registry, :swift_endpoint, Confex.get_env(:ael_api, :swift_endpoint))
+    Registry.register(Ael.Registry, :swift_tenant_id, Confex.get_env(:ael_api, :swift_tenant_id))
+    Registry.register(Ael.Registry, :swift_temp_url_key, Confex.get_env(:ael_api, :swift_temp_url_key))
   end
 
   def load_gcs_service_config do
     :ael_api
-    |> Confex.get_map(:google_cloud_storage)
+    |> Confex.get_env(:google_cloud_storage)
     |> Keyword.get(:service_account_key_path)
     |> File.read!()
     |> Poison.decode!()
   end
 
-  # Configures Logger level via LOG_LEVEL environment variable.
-  defp configure_log_level do
-    case System.get_env("LOG_LEVEL") do
-      nil ->
-        :ok
-      level when level in ["debug", "info", "warn", "error"] ->
-        Logger.configure(level: String.to_atom(level))
-      level ->
-        raise ArgumentError, "LOG_LEVEL environment should have one of 'debug', 'info', 'warn', 'error' values," <>
-                             "got: #{inspect level}"
-    end
-  end
-
   # Loads configuration in `:on_init` callbacks and replaces `{:system, ..}` tuples via Confex
   @doc false
   def load_from_system_env(config) do
-    {:ok, Confex.process_env(config)}
+    {:ok, Resolver.resolve!(config)}
   end
 end

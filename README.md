@@ -1,6 +1,6 @@
 # Ael
 
-[![Build Status](https://travis-ci.org/Nebo15/ael.api.svg?branch=master)](https://travis-ci.org/Nebo15/ael.api) [![Coverage Status](https://coveralls.io/repos/github/Nebo15/ael.api/badge.svg)](https://coveralls.io/github/Nebo15/ael.api)
+[![Build Status](https://travis-ci.org/edenlabllc/ael.api.svg?branch=master)](https://travis-ci.org/edenlabllc/ael.api) [![Coverage Status](https://coveralls.io/repos/github/edenlabllc/ael.api/badge.svg)](https://coveralls.io/github/edenlabllc/ael.api)
 
 Ael is a media content storage access control system that allows to generate secrets
 ([Signed URL's](https://cloud.google.com/storage/docs/access-control/create-signed-urls-program))
@@ -17,11 +17,11 @@ Cloud storage buckets can have most restricted access rights, being available on
 
 ### Heroku One-click deployment
 
-  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nebo15/ael.api)
+  [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/edenlabllc/ael.api)
 
 ### Docker
 
-  Images are available on [nebo15/ael_api](https://hub.docker.com/r/nebo15/ael_api/) Docker Hub.
+  Images are available on [edenlabllc/ael_api](https://hub.docker.com/r/edenlabllc/ael_api/) Docker Hub.
 
 ## Configuration
 

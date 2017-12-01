@@ -11,5 +11,5 @@ config :dogma,
     %Rule.LineLength{ max_length: 120 },
     %Rule.TakenName{ enabled: false }, # TODO: https://github.com/lpil/dogma/issues/201
     %Rule.InfixOperatorPadding{ enabled: false },
-    %Rule.FunctionArity{ max: 5 },
+    %Rule.FunctionArity{ max: 6 },
   ]
