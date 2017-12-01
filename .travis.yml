@@ -54,21 +54,22 @@ branches:
 before_install:
   - openssl aes-256-cbc -K $encrypted_ee0aec3588c4_key -iv $encrypted_ee0aec3588c4_iv -in priv/secret.enc -out priv/service_account_key.json -d
 script:
+  # Check for versioning error
+  - ./bin/ci/release/check-version-error.sh || travis_terminate 1
   # Increment version in mix.exs
-  - ./bin/ci/version-increment.sh
-  # Install dependencies if Travis won't do it by default
-  # - mix deps.get
+  - ./bin/ci/release/put-source-version.sh || travis_terminate 1
+  # Create release notes log for minor version
+  - ./bin/ci/release/put-release-notes.sh
   # Run all tests except pending ones
   - ./bin/mix_tests.sh || travis_terminate 1
   # Build Docker container
-  - ./bin/build.sh || travis_terminate 1
+  - ./bin/ci/release/build-container.sh || travis_terminate 1
+  # Initialize DB for Docker container
+  - MIX_ENV=dev mix ecto.setup
   # Run Docker container
-  - sudo ./bin/start.sh || travis_terminate 1
-  # Run acceptance tests on Docker container
-  - "CONTAINER_HTTP_HOST=localhost CONTAINER_HTTP_PORT=4000 mix test test/acceptance"
+  - sudo ./bin/ci/release/start-container.sh
+  - sudo ./bin/ci/release/check-container.sh || travis_terminate
   # Submit Docker container to Docker Hub and create GitHub Release by pushing tag with changelog
-  - ./bin/ci/push.sh || travis_terminate 1
-after_success:
-  # CD to Dev
+  - ./bin/ci/release/push-changes.sh || travis_terminate 1
   - openssl aes-256-cbc -K $encrypted_cbf93748d642_key -iv $encrypted_cbf93748d642_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
   - sudo ./bin/deploy.sh || travis_terminate 1
